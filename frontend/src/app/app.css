@@ -1,0 +1,10 @@
+/* Garante que a página ocupa a altura toda */
+:host {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.conteudo-pagina {
+    flex: 1; /* Faz o conteúdo ocupar o espaço restante */
+}

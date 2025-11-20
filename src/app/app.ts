@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
-// Removi o RouterOutlet porque não estamos a usar rotas, apenas a Home direta
+import { RouterOutlet } from '@angular/router';
 import { HomeComponent } from './home/home'; 
+import { Header } from './header/header';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [HomeComponent], // Apenas a Home é necessária aqui
+  imports: [RouterOutlet, Header], // Apenas a Home é necessária aqui
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
