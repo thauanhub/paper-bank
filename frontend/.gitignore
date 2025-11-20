@@ -49,3 +49,11 @@ Thumbs.db
 # Importante: Nunca subir arquivos .env com senhas
 .env
 frontend/.env
+
+# --- VITE / BUILD TOOLS ---
+# Ignora a pasta .vite (cache do Vite) onde quer que ela esteja
+.vite/
+# Ignora se existir uma pasta chamada vite sem ponto
+vite/
+# Arquivos temporários de build
+*.tsbuildinfo
