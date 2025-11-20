@@ -1,12 +1,16 @@
-import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component } from '@angular/core';
+// Removi o RouterOutlet porque não estamos a usar rotas, apenas a Home direta
+import { HomeComponent } from './home/home'; 
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  standalone: true,
+  imports: [HomeComponent], // Apenas a Home é necessária aqui
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
+// MUDANÇA IMPORTANTE AQUI EM BAIXO:
+// O nome da classe deve ser 'App' para bater certo com o teu main.ts
 export class App {
-  protected readonly title = signal('paper-bank');
+  title = 'paper-bank';
 }

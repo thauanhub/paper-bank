@@ -1,1 +1,12 @@
-/* You can add global styles to this file, and also import other style files */
+/* Estilos Globais */
+body {
+    background-color: rgb(73, 69, 69);
+    margin: 0;
+    color: rgb(255, 255, 255);
+    font-family: sans-serif;
+}
+
+/* Reset básico */
+h1, p, ul { margin: 0; padding: 0; }
+ul { list-style: none; }
+a { text-decoration: none; color: white; }

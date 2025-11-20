@@ -1,0 +1,77 @@
+<div class="container">
+    <app-header style="grid-area: header;"></app-header>
+  <main class="main-container">
+      <section>
+          <article class="main-top">
+              <p class="main-top-saudacao">Olá!</p>
+              <p class="main-top-descricao">Seja bem vindo ao PaperBank!</p>
+          </article>
+      </section>
+
+      <section class="main-container-content">
+          <article class="main-container-content-saldo">
+              <p>Saldo do PaperBank</p>
+              <p id="valor-saldo">{{ saldoAtual | currency:'BRL' }}</p>
+          </article>
+
+          <article class="main-container-content-historico">
+                <p>Histórico</p>
+    
+                <ul class="lista-transacoes">
+        
+                    <li *ngFor="let item of historico" class="item-transacao">
+            
+                        <div class="transacao-info">
+                            <span class="transacao-tipo">{{ item.tipo }}</span>
+                            <span class="transacao-data">{{ item.data | date:'dd/MM HH:mm' }}</span>
+                        </div>
+
+                        <div class="transacao-valor" 
+                            [class.valor-entrada]="item.entrada" 
+                            [class.valor-saida]="!item.entrada">
+                
+                            {{ item.entrada ? '+' : '-' }} 
+                            {{ item.valor | currency:'BRL' }}
+                        </div>
+                    </li>
+
+                    <li *ngIf="historico.length === 0" class="sem-transacoes">
+                    Nenhuma transação recente.
+                    </li>
+
+                </ul>
+            </article>
+      </section>
+
+      <section class="main-container-actions">
+          <article class="main-container-actions-transacoes">
+              <button (click)="abrirModalTransferencia()" id="btn-enviar">Enviar</button>
+              <button (click)="abrirModalEmprestimo()" id="btn-solicitar">Solicitar</button>
+          </article>
+      </section>
+  </main>
+</div>
+
+<div id="modal-transferencia" [class.modal-oculto]="!exibirModalTransferencia" class="modal-visivel">
+  <div class="modal-conteudo">
+      <h3>Transferência de Saldo</h3>
+      <p>Quanto deseja enviar?</p>
+      <input type="number" [(ngModel)]="valorTransferencia" placeholder="0.00" min="0" step="0.01">
+      <div class="modal-botoes">
+          <button (click)="fecharModalTransferencia()" class="btn-cancelar">Cancelar</button>
+          <button (click)="confirmarTransferencia()" class="btn-confirmar">Confirmar Envio</button>
+      </div>
+  </div>
+</div>
+
+<div id="modal-emprestimo" [class.modal-oculto]="!exibirModalEmprestimo" class="modal-visivel">
+  <div class="modal-conteudo">
+      <h3>Empréstimo</h3>
+      <p>Quanto deseja receber?</p>
+      <input type="number" [(ngModel)]="valorEmprestimo" placeholder="0.00" min="0" step="0.01">
+      <div class="modal-botoes">
+          <button (click)="fecharModalEmprestimo()" class="btn-cancelar">Cancelar</button>
+          <button (click)="confirmarEmprestimo()" class="btn-confirmar">Confirmar Envio</button>
+      </div>
+  </div>
+</div>
