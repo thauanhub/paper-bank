@@ -1,0 +1,107 @@
+.main-content{
+    display: grid;
+    grid-template-columns: 350px 1fr;
+    padding: 20px;
+    gap: 20px;
+    
+    width: 100%;
+    }
+
+.section{
+    display: flex;
+    gap: 20px;
+    flex-direction: column;
+}
+
+.content{
+    background-color: #228B22;
+    border-radius: 15px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    color: white;
+    padding: 20px;
+    height: fit-content;
+}
+
+.content p:first-child{
+    font-size: 1.8em; 
+    opacity: 0.8; 
+    border-bottom: 2px solid #eee; 
+    padding-bottom: 10px; 
+    margin-bottom: 16px;
+}
+
+.card-boletos{
+    width: 100%;
+}
+
+button{
+    
+    font-size: 16px;
+    padding: 10px 20px; 
+    margin: 5px; 
+    cursor: pointer; 
+    border: none; 
+    border-radius: 5px; 
+    font-weight: bold; 
+}
+
+/* Botão do Novo Cartão */
+.btn-novo-cartao {
+    background-color: white;
+    color: #228B22;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: 0.2s;
+}
+
+.btn-novo-cartao:hover {
+    background-color: #eee;
+}
+
+/* Item da lista de Cartões (O cartãozinho criado) */
+.cartao-item {
+    background-color: rgba(0,0,0,0.2); /* Fundo escuro transparente */
+    padding: 15px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-top: 10px;
+    border: 1px solid rgba(255,255,255,0.3);
+}
+
+.cartao-icone {
+    font-size: 2rem;
+}
+
+.cartao-info p {
+    margin: 0;
+    line-height: 1.4;
+}
+
+.cartao-tipo { font-weight: bold; }
+.cartao-numero { font-family: monospace; font-size: 1.1rem; }
+.cartao-validade { font-size: 0.8rem; opacity: 0.8; }
+
+/* Estilo da caixa do Saldo */
+.item-saldo {
+    background-color: rgba(255, 255, 255, 0.2);
+    padding: 15px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-top: 15px;
+    border: 1px solid rgba(255,255,255,0.5);
+}
+
+/* Estilo do Valor (R$ ...) */
+.cartao-valor {
+    font-weight: bold;
+    font-size: 1.2rem;
+    color: #fff; /* Garante que fica branco */
+}

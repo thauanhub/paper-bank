@@ -1,4 +1,7 @@
 /* Estilos Globais */
+* {
+    box-sizing: border-box; /* A regra mágica */
+}
 body {
     background-color: rgb(73, 69, 69);
     margin: 0;
