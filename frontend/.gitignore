@@ -1,17 +1,29 @@
 # See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
 
-# Compiled output
-/dist
-/tmp
-/out-tsc
-/bazel-out
-
-# Node
-/node_modules
+# --- DEPENDENCIES ---
+# O node_modules deve ser ignorado em qualquer lugar (raiz ou dentro de frontend)
+node_modules/
 npm-debug.log
 yarn-error.log
 
-# IDEs and editors
+# --- COMPILED OUTPUT ---
+# Ignora a pasta dist onde quer que ela esteja (frontend/dist)
+dist/
+tmp/
+out-tsc/
+bazel-out/
+
+# --- ANGULAR ---
+.angular/
+.sass-cache/
+connect.lock
+coverage/
+libpeerconnection.log
+testem.log
+typings/
+__screenshots__/
+
+# --- IDEs AND EDITORS ---
 .idea/
 .project
 .classpath
@@ -20,24 +32,20 @@ yarn-error.log
 .settings/
 *.sublime-workspace
 
-# Visual Studio Code
+# --- VISUAL STUDIO CODE ---
+# Ignora configurações locais do VS Code
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
-.history/*
+.history/
 
-# Miscellaneous
-/.angular/cache
-.sass-cache/
-/connect.lock
-/coverage
-/libpeerconnection.log
-testem.log
-/typings
-__screenshots__/
-
-# System files
+# --- SYSTEM FILES ---
 .DS_Store
 Thumbs.db
+
+# --- ENVIRONMENT VARIABLES ---
+# Importante: Nunca subir arquivos .env com senhas
+.env
+frontend/.env
