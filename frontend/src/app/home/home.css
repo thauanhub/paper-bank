@@ -71,8 +71,9 @@ input[type="number"] {
 
 .modal-botoes button { 
     padding: 10px 20px; 
-    margin: 5px; cursor: 
-    pointer; border: none; 
+    margin: 5px; 
+    cursor: pointer; 
+    border: none; 
     border-radius: 5px; 
     font-weight: bold; 
 }

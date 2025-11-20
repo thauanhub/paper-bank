@@ -1,20 +1,53 @@
 <main class="main-content">
-    <section>
+    <section class="section">
 
-        <article class="content-cartao">
+        <article class="content card-cartao">
             <p>Cartões</p>
             <p>Peça seu cartão</p>
-            <button>Novo cartão</button>
+            <button (click)="solicitarNovoCartao()" class="btn-novo-cartao">
+            Novo cartão
+        </button>
         </article>
 
-        <article class="content-pagamento">
+        <article class="content card-pagamento">
             <p>Meios de pagamento</p>
-            <ul class="lista-pagamentos">
 
+            <div class="item-saldo">
+            <div class="cartao-icone">💰</div>
+            <div class="cartao-info">
+                <p class="cartao-tipo">Saldo PaperBank</p>
                 
+                <p class="cartao-valor">{{ saldo | currency:'BRL' }}</p>
+                
+                <p class="cartao-validade">Disponível para uso imediato</p>
+            </div>
+        </div>
 
-            </ul>
+        <hr class="divisor-pagamento" *ngIf="meiosDePagamento.length > 0">
+
+            <p *ngIf="meiosDePagamento.length === 0" style="opacity: 0.7; margin-top: 16px;">
+            Nenhum cartão cadastrado.
+        </p>
+            <div *ngFor="let cartao of meiosDePagamento" class="cartao-item">
+            <div class="cartao-icone">💳</div>
+            <div class="cartao-info">
+                <p class="cartao-tipo">{{ cartao.tipo }} PaperBank</p>
+                <p class="cartao-numero">{{ cartao.numero }}</p>
+                <p class="cartao-validade">Val: {{ cartao.validade }}</p>
+            </div>
+        </div>
 
         </article>
     </section>
+
+    <section class="section">
+         <article class="content card-boletos">
+            <p>Boletos</p>
+        </article>
+
+        <article class="content">
+            <p>Contatos</p>
+        </article>
+    </section>
+
 </main>
