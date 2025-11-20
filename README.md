@@ -1,59 +1,60 @@
-# PaperBank
+# 🏦 PaperBank
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.0.0.
+Bem-vindo ao **PaperBank**! Este é um projeto de banco digital desenvolvido como uma Single Page Application (SPA) utilizando **Angular**.
 
-## Development server
+Siga os passos abaixo para baixar, configurar e rodar o projeto na sua máquina.
 
-To start a local development server, run:
+---
+
+## 📋 Pré-requisitos
+
+Antes de começar, certifique-se de que tem instalado no seu computador:
+
+1.  **[Node.js](https://nodejs.org/)** (Versão LTS recomendada).
+2.  **[Git](https://git-scm.com/)**.
+3.  **Angular CLI** (Opcional, mas recomendado):
+    ```bash
+    npm install -g @angular/cli
+    ```
+
+---
+
+## 🚀 Como rodar o projeto
+
+### 1. Clonar o repositório
+Abra o seu terminal (CMD, PowerShell ou Terminal do VS Code) e rode o comando abaixo para baixar o código:
+
+```bash
+git clone [https://github.com/thauahub/paper-bank.git](https://github.com/SEU-USUARIO/paper-bank.git)
+```
+
+### 2. Entrar na pasta do projeto
+
+```bash
+cd paper-bank
+cd frontend
+```
+
+### 3. Instalar as dependências
+
+```bash
+npm install
+```
+(Aguarde o fim da instalação)
+
+### 4. Instalar as dependências
 
 ```bash
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+Se o comando ng não for reconhecido, utilize:
 
 ```bash
-ng generate component component-name
+npm start
 ```
+### 5. Acessar o site
+Assim que aparecer a mensagem "Compiled successfully", abra o seu navegador e acesse:
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+👉 http://localhost:4200
 
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
