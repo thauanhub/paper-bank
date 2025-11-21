@@ -135,21 +135,30 @@ class PixSchema(BaseModel):
     chavePix: str
     tipoChave: str
 # --- Schemas para MongoDB (NoSQL) ---
-
+class detalhesFeedback(BaseModel):
+        feature: Optional[str] = None
+        versaoApp: Optional[str] = None
+        modulo: Optional[str] = None
 class FeedbackCreate(BaseModel):
-    tipoUsuario: str
     fk_idUsuario: int
+    tipoUsuario: str
+    dataHora: Optional[datetime] = None
     ratingGeral: int
     comentario: str
     tags: List[str]
-    detalhes: Dict[str, Any]  # Permite JSON aninhado
-    dataHora: Optional[datetime] = None # Opcional, se não vier, geramos no backend
-
+    detalhes: detalhesFeedback
+    
+    
+class DetalhesLog(BaseModel):
+    dispositivo: Optional[str] = None
+    codigoErro: Optional[str] = None
+    stackTrace: Optional[str] = None
 class LogCreate(BaseModel):
+    dataHora: Optional[datetime] = None
     tipo: str
     fk_idUsuario: int
     ipOrigem: str
-    nivelSeveridade: str
     mensagem: str
-    detalhesAdicionais: Dict[str, Any]
-    dataHora: Optional[datetime] = None    
+    nivelSeveridade: str
+    detalhesAdicionais: DetalhesLog
+    
