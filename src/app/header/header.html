@@ -1,18 +1,24 @@
-<header class="header">
-      <h1>PaperBank</h1>
-      <nav>
-          <ul class="header-nav-menu">
-              <li><a routerLink="/">Principal</a></li>
-              <li><a href="/atividades">Atividades</a></li>
-              <li><a routerLink="/carteira">Carteira</a></li>
-              <li><a href="/ajuda">Ajuda</a></li>
-          </ul>
-      </nav>
-      <nav>
-          <ul class="header-nav-config">
-              <li><a href="#">Notificação</a></li>
-              <li><a href="/configuracao">Configurações</a></li>
-              <li><a href="#">Sair</a></li>
-          </ul>
-      </nav>
-  </header>
+<header class="header" [class.login-mode]="ehPaginaLogin()">
+    
+    <h1>PaperBank</h1>
+
+    @if (!ehPaginaLogin()) {
+        <nav>
+            <ul class="header-nav-menu">
+                <li><a routerLink="/home">Principal</a></li>
+                <li><a href="/atividades">Atividades</a></li>
+                <li><a routerLink="/carteira">Carteira</a></li>
+                <li><a href="/ajuda">Ajuda</a></li>
+            </ul>
+        </nav>
+        
+        <nav>
+            <ul class="header-nav-config">
+                <li><a href="">Notificação</a></li>
+                <li><a href="/configuracoes">Configurações</a></li>
+                <li><a href="">Sair</a></li>
+            </ul>
+        </nav>
+    }
+
+</header>
