@@ -1,29 +1,19 @@
-# See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
-
-# --- DEPENDENCIES ---
-# O node_modules deve ser ignorado em qualquer lugar (raiz ou dentro de frontend)
-node_modules/
-npm-debug.log
-yarn-error.log
-
-# --- COMPILED OUTPUT ---
-# Ignora a pasta dist onde quer que ela esteja (frontend/dist)
-dist/
-tmp/
-out-tsc/
-bazel-out/
-
-# --- ANGULAR ---
-.angular/
+# --- ANGULAR (Raiz) ---
+/node_modules
+/dist
+/tmp
+/out-tsc
+/bazel-out
+/.angular/
 .sass-cache/
-connect.lock
-coverage/
-libpeerconnection.log
+/connect.lock
+/coverage
+/libpeerconnection.log
 testem.log
-typings/
+/typings
 __screenshots__/
 
-# --- IDEs AND EDITORS ---
+# --- IDEs & EDITORES ---
 .idea/
 .project
 .classpath
@@ -31,9 +21,6 @@ __screenshots__/
 *.launch
 .settings/
 *.sublime-workspace
-
-# --- VISUAL STUDIO CODE ---
-# Ignora configurações locais do VS Code
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
@@ -41,19 +28,14 @@ __screenshots__/
 !.vscode/extensions.json
 .history/
 
-# --- SYSTEM FILES ---
+# --- SISTEMA ---
 .DS_Store
 Thumbs.db
 
-# --- ENVIRONMENT VARIABLES ---
-# Importante: Nunca subir arquivos .env com senhas
-.env
-frontend/.env
-
-# --- VITE / BUILD TOOLS ---
-# Ignora a pasta .vite (cache do Vite) onde quer que ela esteja
-.vite/
-# Ignora se existir uma pasta chamada vite sem ponto
-vite/
-# Arquivos temporários de build
-*.tsbuildinfo
+# --- BACKEND (Python/FastAPI) ---
+# Ignora arquivos temporários dentro da pasta backend
+backend/__pycache__/
+backend/*.py[cod]
+backend/.venv/
+backend/venv/
+backend/.env
