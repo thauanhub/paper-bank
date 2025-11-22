@@ -7,13 +7,26 @@ import random
 import models, schemas,auth
 from database import engine, get_db, mongodb
 import mongo_routes
-
+from fastapi.middleware.cors import CORSMiddleware
 # Cria tabelas se não existirem
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Paper Bank API")
 app.include_router(mongo_routes.mongo_router)
 app.include_router(auth.auth_router)
+origins = [
+    "http://localhost:4200",
+    "http://localhost:5173",
+    "http://localhost:3000",
+    "http://127.0.0.1:4200"
+]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.on_event("startup")
 def startup_event():
