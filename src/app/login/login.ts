@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router'; // Para navegar após login
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms'; // Importante para os inputs
+import { PaperBankService } from '../paper-bank.service';
 
 @Component({
   selector: 'app-login',
@@ -16,28 +17,58 @@ export class Login {
   email: string = '';
   senha: string = '';
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private pb: PaperBankService) {}
+
+  // Base da API
+  private apiBase = 'http://localhost:8000';
 
   fazerLogin() {
     // 1. Validação de FRONTEND (UX)
     if (this.email === '' || this.senha === '') {
-      alert("Por favor, preencha todos os campos!");
+      alert('Por favor, preencha todos os campos!');
       return;
     }
 
-    // 2. Simulação de envio para o Backend (FastAPI)
-    console.log("Enviando para API:", this.email, this.senha);
+    const body = new URLSearchParams();
+    body.set('username', this.email);
+    body.set('password', this.senha);
 
-    // Aqui, no futuro, faremos a chamada real para o FastAPI.
-    // Por enquanto, vamos fingir que deu certo:
-    
-    alert("Login realizado com sucesso!");
-    this.router.navigate(['/home']); // Redireciona para a Home
+    fetch(`${this.apiBase}/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: body.toString()
+    })
+    .then(async res => {
+      if (!res.ok) {
+        let errDetail = 'Falha ao efetuar login';
+        try { const j = await res.json(); errDetail = j.detail || j.message || JSON.stringify(j) || errDetail; } catch(_){}
+        console.error('Login falhou, status:', res.status, 'body:', errDetail);
+        alert(errDetail);
+        return;
+      }
+
+      const data = await res.json();
+      if (data && data.access_token) {
+        localStorage.setItem('access_token', data.access_token);
+        // iniciar websocket e carregar saldo
+        alert('Login realizado com sucesso!');
+        // navegar para home (usamos navigateByUrl e logamos o resultado)
+        this.router.navigateByUrl('/home')
+          .then(ok => console.info('Navegação para /home:', ok))
+          .catch(err => console.error('Erro ao navegar:', err));
+      } else {
+        alert('Resposta de login inválida do servidor');
+      }
+    })
+    .catch(err => {
+      console.error('Erro de rede no login:', err);
+      alert('Erro de rede ao tentar fazer login');
+    });
   }
   
   irParaCadastro() {
       // Lógica futura para ir para tela de cadastro
-      alert("Ir para tela de cadastro");
+      alert('Ir para tela de cadastro');
       this.router.navigate(['/register']);
   }
 }
