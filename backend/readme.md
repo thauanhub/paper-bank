@@ -4,7 +4,7 @@
 
 # Escolher o ambiente - .venv\Scripts\activate
 
-# Instalar as dependencias - pip install -r requiriments.txt
+# Instalar as dependencias - pip install -r requirements.txt
 
 # Caso o pip nao esteja instalado - python -m ensurepip --upgrade
 
