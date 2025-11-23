@@ -15,6 +15,9 @@ K6Testes/
 testem.log
 /typings
 __screenshots__/
+vite/
+.vite/
+dist/
 
 # --- IDEs & EDITORES ---
 .idea/
