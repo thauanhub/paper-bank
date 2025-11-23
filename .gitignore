@@ -34,11 +34,3 @@ __screenshots__/
 # --- SISTEMA ---
 .DS_Store
 Thumbs.db
-
-# --- BACKEND (Python/FastAPI) ---
-# Ignora arquivos temporários dentro da pasta backend
-backend/__pycache__/
-backend/*.py[cod]
-backend/.venv/
-backend/venv/
-backend/.env
