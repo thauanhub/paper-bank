@@ -1,14 +1,25 @@
 <div class="card-login"> 
     <h3>Cadastro</h3>
-    <input type="text" placeholder="Nome" >
+    <input type="text" placeholder="Nome" [(ngModel)]="nome" >
     <br>
-    <input type="text" placeholder="CPF" >
+    <input type="text" placeholder="CPF" [(ngModel)]="cpf">
     <br>
-    <input type="text" placeholder="Email" >
+    <input type="text" placeholder="Email" [(ngModel)]="email">
     <br>
-    <input type="date" placeholder="Data de nascimento" >
+   <input type="date" 
+       placeholder="Data de nascimento" 
+       [(ngModel)]="dataNascimento"
+       class="input-data">
     <br>
-    <input type="password" placeholder="Senha">
+    <input type="password" placeholder="Senha" [(ngModel)]="senha">
     <br>
     <button class="btn-register" >Cadastrar</button>
+
+    <p class="link-login">
+    Já tem uma conta? 
+    <a routerLink="/login">Fazer Login</a>
+</p>
+<br>
+<br>
+
 </div>
