@@ -17,6 +17,7 @@
     color: white;
     padding: 20px;
     height: 200px;
+    min-width: fit-content;
 }
 
 .main-container-content-saldo p:first-child, .main-container-content-historico p:first-child { 
