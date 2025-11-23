@@ -1,15 +1,12 @@
 import { Routes } from '@angular/router';
 import { HomeComponent } from './home/home';         // Importa a Home
 import { Carteira } from './carteira/carteira'; // Importa a Carteira
-<<<<<<< HEAD
-=======
 import { Configuracoes } from './configuracoes/configuracoes';
 import { Atividades } from './atividades/atividades';
 import { Ajuda } from './ajuda/ajuda';
 import { Login } from './login/login';
 import { Register } from './register/register';
 
->>>>>>> 4298f068 (Alterações no diretório e criação de componentes)
 
 export const routes: Routes = [
 
@@ -19,9 +16,6 @@ export const routes: Routes = [
     { path: 'home', component: HomeComponent },
     
     // Rota da Carteira
-<<<<<<< HEAD
-    { path: 'carteira', component: Carteira }
-=======
     { path: 'carteira', component: Carteira },
 
     { path: 'configuracoes', component: Configuracoes},
@@ -32,5 +26,4 @@ export const routes: Routes = [
 
     { path: 'register', component: Register}
 
->>>>>>> 4298f068 (Alterações no diretório e criação de componentes)
 ];
