@@ -28,8 +28,7 @@ input{
 button{
     padding: 15px 25px; 
     margin: 5px;
-    margin-top: 24px;
-    margin-bottom: 24px; 
+    margin-top: 24px; 
     cursor: pointer; 
     border: none; 
     border-radius: 5px; 
@@ -51,4 +50,23 @@ button:hover {
 .btn-register{
     background-color: #50C878; 
     color: white;    
+}
+
+/* src/app/register/register.css */
+input[type="date"] {
+    /* Assegura o mesmo estilo dos inputs de texto */
+    font-family: sans-serif;
+    color: #333;
+}
+
+.link-login{
+    color: white; 
+    font-size: 0.9em; 
+    margin-top: 15px;
+}
+
+a{
+    font-weight: bold; 
+    color: white; 
+    cursor: pointer;
 }
