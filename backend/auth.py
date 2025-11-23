@@ -87,8 +87,9 @@ async def obter_cliente_atual(token: str = Depends(oauth2_scheme), db: Session =
     return cliente
 
 # --- Rota de Registro ---
-@auth_router.post("/registrar", response_model=schemas.ClienteResponse)
+@auth_router.post("/registrar", status_code=201)
 def registrar_cliente(cliente_in: schemas.ClienteSchema, db: Session = Depends(get_db)):
+    
     # 1. Validar CPF
     if db.query(models.Cliente).filter(models.Cliente.cpf == cliente_in.cpf).first():
         raise HTTPException(status_code=400, detail="CPF já cadastrado")
@@ -100,7 +101,7 @@ def registrar_cliente(cliente_in: schemas.ClienteSchema, db: Session = Depends(g
     # 3. Atribuir Gerente 
     gerente = db.query(models.Gerente).first()
     if not gerente:
-        raise HTTPException(status_code=500, detail="Nenhum gerente disponível para abertura de conta.")
+        raise HTTPException(status_code=500, detail="Erro interno: Nenhum gerente disponível.")
 
     # 4. Criar Cliente
     hashed_password = obter_hash_senha(cliente_in.senha)
@@ -111,7 +112,7 @@ def registrar_cliente(cliente_in: schemas.ClienteSchema, db: Session = Depends(g
         email=cliente_in.email,
         senha=hashed_password,
         telefone=cliente_in.telefone,
-        endereco= cliente_in.endereco,
+        endereco=cliente_in.endereco,
         dataNascimento=cliente_in.dataNascimento,
         fk_idGerente=gerente.idGerente
     )
@@ -142,9 +143,14 @@ def registrar_cliente(cliente_in: schemas.ClienteSchema, db: Session = Depends(g
             "data_hora": datetime.utcnow()
         })
     except:
-        pass # Log não deve parar a aplicação em caso de erro simples
-
-    return db_cliente
+        pass 
+    
+    return {
+        "mensagem": "Cliente cadastrado com sucesso!",
+        "cliente_id": db_cliente.idCliente,
+        "nome": db_cliente.nome,
+        "numero_conta": numero_conta_gerado
+    }
 
 # --- Rota de Login ---
 @auth_router.post("/login", response_model=schemas.Token)

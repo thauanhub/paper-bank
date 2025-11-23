@@ -4,7 +4,11 @@
     <br>
     <input type="text" placeholder="CPF" [(ngModel)]="cpf">
     <br>
-    <input type="text" placeholder="Email" [(ngModel)]="email">
+    <input type="text" placeholder="Endereço" [(ngModel)]="endereco">
+    <br>
+    <input type="text" placeholder="Telefone" [(ngModel)]="telefone">
+    <br>
+    <input type="emai" placeholder="Email" [(ngModel)]="email">
     <br>
    <input type="date" 
        placeholder="Data de nascimento" 
@@ -13,11 +17,20 @@
     <br>
     <input type="password" placeholder="Senha" [(ngModel)]="senha">
     <br>
-    <button class="btn-register" >Cadastrar</button>
+    <button 
+    type="button" 
+    class="btn-register" 
+    (click)="cadastrar()"
+    [disabled]="carregando"
+    [style.opacity]="carregando ? '0.5' : '1'">
+    
+    {{ carregando ? 'Cadastrando...' : 'Cadastrar' }}
+
+</button>
 
     <p class="link-login">
     Já tem uma conta? 
-    <a routerLink="/login">Fazer Login</a>
+    <a routerLink="">Fazer Login</a>
 </p>
 <br>
 <br>

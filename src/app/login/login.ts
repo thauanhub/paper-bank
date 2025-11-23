@@ -68,7 +68,7 @@ export class Login {
   
   irParaCadastro() {
       // Lógica futura para ir para tela de cadastro
-      alert('Ir para tela de cadastro');
+      //alert('Ir para tela de cadastro');
       this.router.navigate(['/register']);
   }
 }
