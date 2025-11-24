@@ -34,9 +34,9 @@ export class PaperBankService {
           // A ATUALIZAÇÃO
           this.saldo = resposta.saldo; 
 
-          if (resposta.nome_completo) {
+          if (resposta.nome_cliente) {
             // Divide o texto nos espaços e pega a primeira parte
-            const primeiroNome = resposta.nome_completo.split(' ')[0];
+            const primeiroNome = resposta.nome_cliente.split(' ')[0];
             this.nomeUsuario = primeiroNome;
           }
         },
