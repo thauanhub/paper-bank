@@ -87,6 +87,11 @@ class CartaoSchema(BaseModel):
     limite: Decimal
     fk_idCliente: int
 
+
+class CartaoCreate(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    limite: Decimal = Decimal('2000.00')
+
 class FaturaSchema(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 

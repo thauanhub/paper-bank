@@ -2,6 +2,7 @@
 from fastapi import FastAPI, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from datetime import datetime, date
+from dateutil.relativedelta import relativedelta
 from decimal import Decimal
 import random 
 import models, schemas,auth
@@ -51,6 +52,7 @@ def obter_saldo(
         raise HTTPException(status_code=404, detail="Conta bancária não encontrada")
     
     return {
+        "nome_cliente": cliente_atual.nome,
         "numero_conta": conta.numeroConta,
         "saldo": float(conta.saldo),
         "status": conta.status
@@ -139,6 +141,54 @@ def transferir_pix(
         pass
 
     return db_transacao
+
+
+# --- Rota: Criar Cartão de Crédito ---
+@app.post("/cartao", response_model=schemas.CartaoSchema, status_code=201)
+def criar_cartao(
+    cartao_in: schemas.CartaoCreate,
+    cliente_atual: models.Cliente = Depends(auth.obter_cliente_atual),
+    db: Session = Depends(get_db)
+):
+    # Gera número do cartão de forma simples: prefixado pelo idCliente + dígitos aleatórios
+    # Repetimos até garantir unicidade na tabela
+    numero_cartao = int(f"{cliente_atual.idCliente}{random.randint(100000000,999999999)}")
+    while db.query(models.Cartao).filter(models.Cartao.numeroCartao == numero_cartao).first():
+        numero_cartao = int(f"{cliente_atual.idCliente}{random.randint(100000000,999999999)}")
+
+    # Validade (3 anos a partir de hoje)
+    validade = date.today() + relativedelta(years=3)
+
+    # CVV aleatório de 3 dígitos
+    cvv = random.randint(100, 999)
+
+    # Criar cartao
+    db_cartao = models.Cartao(
+        numeroCartao=numero_cartao,
+        validade=validade,
+        cvv=cvv,
+        tipo= "CREDITO",
+        limite=cartao_in.limite,
+        fk_idCliente=cliente_atual.idCliente
+    )
+
+    db.add(db_cartao)
+    db.commit()
+    db.refresh(db_cartao)
+
+    # Log (Mongo)
+    try:
+        mongodb.logs_eventos.insert_one({
+            "tipo": "CRIAR_CARTAO",
+            "fk_idUsuario": cliente_atual.idCliente,
+            "id_cartao": db_cartao.numeroCartao,
+            "data_hora": datetime.utcnow(),
+            "mensagem": "Cartão criado com sucesso"
+        })
+    except:
+        pass
+
+    return db_cartao
 
 # --- Rota: Extrato ---
 @app.get("/extrato")
