@@ -19,7 +19,7 @@ origins = [
     "http://localhost:5173",
     "http://localhost:3000",
     "http://127.0.0.1:4200",
-    "http://localhost:8000",    # O próprio backend
+    "http://localhost:8000",   
     "http://127.0.0.1:8000"
 ]
 app.add_middleware(
@@ -63,7 +63,7 @@ def transferir_pix(
     cliente_atual: models.Cliente = Depends(auth.obter_cliente_atual),
     db: Session = Depends(get_db)
 ):
-    # 1. Verificar senha transacional (RF07) - Verifica hash no modelo Cliente
+    # 1. Verificar senha transacional
     if not auth.verificar_senha(transacao_in.senha, cliente_atual.senha):
         raise HTTPException(status_code=400, detail="Senha transacional incorreta")
     
@@ -75,12 +75,11 @@ def transferir_pix(
     if not conta_origem:
         raise HTTPException(status_code=404, detail="Conta de origem não encontrada")
 
-    # 3. Verificar saldo (RN10)
+    # 3. Verificar saldo 
     if conta_origem.saldo < transacao_in.valor:
         raise HTTPException(status_code=400, detail="Saldo insuficiente")
     
     # 4. Obter conta destino (Busca simplificada: Email = Chave Pix)
-    # Primeiro achamos o dono do email, depois a conta dele
     cliente_destino = db.query(models.Cliente).filter(
         models.Cliente.email == transacao_in.chave_pix
     ).first()
@@ -119,7 +118,7 @@ def transferir_pix(
     )
     db.add(db_pix)
     
-    # 7. Atualizar Saldos (Atomicidade garantida pelo commit único ao final)
+    # 7. Atualizar Saldos
     conta_origem.saldo -= transacao_in.valor
     conta_destino.saldo += transacao_in.valor
     
@@ -131,6 +130,7 @@ def transferir_pix(
         mongodb.logs_eventos.insert_one({
             "tipo": "TRANSFERENCIA_PIX",
             "id_cliente_origem": cliente_atual.idCliente,
+            "id_cliente_destino": cliente_destino.idCliente,
             "valor": float(transacao_in.valor),
             "data_hora": datetime.utcnow(),
             "id_transacao": db_transacao.idTransacao
