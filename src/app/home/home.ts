@@ -1,9 +1,8 @@
-import { Component, inject } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core'; // 1. Importa OnInit
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PaperBankService } from '../paper-bank.service'; 
 
-// 1. Definimos o molde da Transação novamente
 interface Transacao {
   tipo: string;
   valor: number;
@@ -18,21 +17,28 @@ interface Transacao {
   templateUrl: './home.html',
   styleUrl: './home.css'
 })
-export class HomeComponent {
-  // 2. Conexão com o Cofre (Service)
-  private paperBankService = inject(PaperBankService);
+export class HomeComponent implements OnInit {
+  
+  // 2. Mantemos SÓ este (o public permite usar 'pb' direto no HTML)
+  constructor(public pb: PaperBankService, private cdr: ChangeDetectorRef) {}
 
-  // Getter para ler o saldo do Cofre
-  get saldoAtual(): number {
-    return this.paperBankService.saldo;
+  // 3. Ao iniciar a Home, pedimos ao serviço para buscar o saldo atualizado
+  ngOnInit() {
+    // 1. Pede o saldo
+    this.pb.carregarSaldo();
+
+    // 2. Truque: Espera meio segundo e força a tela a pintar de novo
+    setTimeout(() => {
+      this.cdr.detectChanges();
+    }, 500);
   }
 
-  // 3. A Lista do Histórico (Voltou!)
+  // Histórico Local
   historico: Transacao[] = [];
 
   // Variáveis dos Modais
-  exibirModalTransferencia: boolean = false;
-  exibirModalEmprestimo: boolean = false;
+  exibirModalTransferencia = false;
+  exibirModalEmprestimo = false;
   valorTransferencia: number | null = null;
   valorEmprestimo: number | null = null;
 
@@ -42,21 +48,21 @@ export class HomeComponent {
   abrirModalEmprestimo() { this.exibirModalEmprestimo = true; this.valorEmprestimo = null; }
   fecharModalEmprestimo() { this.exibirModalEmprestimo = false; }
 
-  // 4. Lógica de Transferência (Atualiza Saldo E Histórico)
+  // --- Lógica de Transferência ---
   confirmarTransferencia() {
     if (!this.valorTransferencia || this.valorTransferencia <= 0) {
       alert("Valor inválido.");
       return;
     }
-    if (this.valorTransferencia > this.saldoAtual) {
+    // Usamos 'this.pb.saldo' agora
+    if (this.valorTransferencia > this.pb.saldo) {
       alert("Saldo insuficiente.");
       return;
     }
 
-    // A. Tira do Cofre Central
-    this.paperBankService.saldo -= this.valorTransferencia;
+    // Atualiza no Service (Cofre)
+    this.pb.saldo -= this.valorTransferencia;
 
-    // B. Anota no Histórico Local
     this.historico.unshift({
       tipo: 'Enviado',
       valor: this.valorTransferencia,
@@ -68,17 +74,16 @@ export class HomeComponent {
     this.fecharModalTransferencia();
   }
 
-  // 5. Lógica de Empréstimo (Atualiza Saldo E Histórico)
+  // --- Lógica de Empréstimo ---
   confirmarEmprestimo() {
     if (!this.valorEmprestimo || this.valorEmprestimo <= 0) {
       alert("Valor inválido.");
       return;
     }
 
-    // A. Coloca no Cofre Central
-    this.paperBankService.saldo += this.valorEmprestimo;
+    // Atualiza no Service (Cofre)
+    this.pb.saldo += this.valorEmprestimo;
 
-    // B. Anota no Histórico Local
     this.historico.unshift({
       tipo: 'Recebido',
       valor: this.valorEmprestimo,

@@ -50,6 +50,8 @@ export class Login {
       const data = await res.json();
       if (data && data.access_token) {
         localStorage.setItem('access_token', data.access_token);
+
+        this.pb.carregarSaldo();
         // iniciar websocket e carregar saldo
         alert('Login realizado com sucesso!');
         // navegar para home (usamos navigateByUrl e logamos o resultado)

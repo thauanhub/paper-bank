@@ -1,20 +1,50 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+
 @Injectable({
-  providedIn: 'root' // Isto diz: "Este serviço é único para o app inteiro"
+  providedIn: 'root'
 })
-
-
-
 export class PaperBankService {
-  // Base da API
+  private http = inject(HttpClient);
   private apiBase = 'http://localhost:8000';
 
-  // Saldo atual
-  saldo = 0;
-
-  // WebSocket instance
-  private ws: WebSocket | null = null;
+  // Variável que guarda o saldo para o site todo usar
+  saldo: number = 0;
 
   constructor() {}
 
+  carregarSaldo() {
+    // 1. Pega o token que o Login salvou
+    const token = localStorage.getItem('access_token');
+
+    if (!token) return;
+
+    // 2. Prepara o cabeçalho com a "carteira de identidade" (Token)
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+
+    // 3. Faz o pedido ao FastAPI
+    // (Certifique-se que a rota no Python é /saldo ou ajuste aqui)
+    // ... dentro do carregarSaldo ...
+    this.http.get<any>(`${this.apiBase}/saldo`, { headers: headers })
+      .subscribe({
+        next: (resposta) => {
+          // LOG 1: O que chegou?
+          console.log('1. O Backend mandou:', resposta);
+          
+          // LOG 2: Quanto estava antes?
+          console.log('2. Saldo ANTES da atualização:', this.saldo);
+
+          // A ATUALIZAÇÃO
+          this.saldo = resposta.saldo; 
+
+          // LOG 3: Quanto ficou depois?
+          console.log('3. Saldo DEPOIS da atualização:', this.saldo);
+        },
+        error: (erro) => {
+          console.error('Erro ao buscar saldo:', erro);
+        }
+      });
+  }
 }
