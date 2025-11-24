@@ -1,5 +1,5 @@
 # --- TESTES DE CARGA (K6) ---
-K6Testes/
+TesteCarga/
 
 # --- ANGULAR (Raiz) ---
 /node_modules

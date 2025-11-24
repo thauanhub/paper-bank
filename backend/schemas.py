@@ -23,7 +23,7 @@ class ClienteSchema(BaseModel):
     telefone: Optional[str] = None
     email: EmailStr
     dataNascimento: Optional[date] = None
-    fk_idGerente: int
+    fk_idGerente: Optional[int] = None      # <-- CORRIGIDO
 
 # --- Schemas Base (Compartilhados) ---
 class ClienteBase(BaseModel):
