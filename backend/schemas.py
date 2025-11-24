@@ -134,6 +134,12 @@ class PixSchema(BaseModel):
     idPixTransacao: int
     chavePix: str
     tipoChave: str
+    
+# --- Input: Redefinir/Alterar Senha ---
+class SenhaRedefinir(BaseModel):
+    senha_atual: str
+    nova_senha: str
+    confirmar_nova_senha: Optional[str] = None
 # --- Schemas para MongoDB (NoSQL) ---
 class detalhesFeedback(BaseModel):
         feature: Optional[str] = None
@@ -161,4 +167,13 @@ class LogCreate(BaseModel):
     mensagem: str
     nivelSeveridade: str
     detalhesAdicionais: DetalhesLog
+
+
+class PixTransferenciaItem(BaseModel):
+    id_transacao: Optional[int] = None
+    data_hora: Optional[datetime] = None
+    valor: Decimal
+    nome_origem: Optional[str] = None
+    nome_destino: Optional[str] = None
+    tipo: str  # "entrada" | "saida" | "outro" (relative to the calling user)
     

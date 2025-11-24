@@ -66,7 +66,7 @@ async def obter_cliente_atual(token: str = Depends(oauth2_scheme), db: Session =
     
     try:
         payload = jwt.decode(token, settings.secret_key, algorithms=[settings.algorithm])
-        # O 'sub' no token agora guarda o idCliente (como string)
+        # O 'sub' no token guarda o idCliente 
         cliente_id: str = payload.get("sub")
         
         if cliente_id is None:
@@ -155,7 +155,7 @@ def registrar_cliente(cliente_in: schemas.ClienteSchema, db: Session = Depends(g
 # --- Rota de Login ---
 @auth_router.post("/login", response_model=schemas.Token)
 def login_cliente(dados_login: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
-    # Busca cliente pelo email (agora a auth é direta na tabela Cliente)
+    # Busca cliente pelo email 
     cliente = autenticar_cliente(db, dados_login.username, dados_login.password)
     print(1)
     if not cliente:
@@ -173,5 +173,51 @@ def login_cliente(dados_login: OAuth2PasswordRequestForm = Depends(), db: Sessio
 @auth_router.get("/minha-conta", response_model=schemas.ClienteResponse)
 def obter_minha_conta(cliente_atual: models.Cliente = Depends(obter_cliente_atual)):
     return cliente_atual
+
+
+# --- Rota: Redefinir Senha ---
+@auth_router.post("/redefinir-senha")
+def redefinir_senha(
+    body: schemas.SenhaRedefinir,
+    cliente_atual: models.Cliente = Depends(obter_cliente_atual),
+    db: Session = Depends(get_db)
+):
+    # Recarrega o cliente com a sessao atual para garantir que o commit afetara a mesma sessao
+    cliente_db = db.query(models.Cliente).filter(models.Cliente.idCliente == cliente_atual.idCliente).first()
+    if not cliente_db:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Cliente não encontrado")
+
+    # Verificar senha atual
+    if not verificar_senha(body.senha_atual, cliente_db.senha):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Senha atual incorreta")
+
+    # Validacoes basicas -> nova senha diferente da atual
+    if verificar_senha(body.nova_senha, cliente_db.senha):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="A nova senha não pode ser igual à senha atual")
+    
+
+    # Confirmação (se informada)
+    if body.confirmar_nova_senha is not None and body.nova_senha != body.confirmar_nova_senha:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Nova senha e confirmação não conferem")
+
+    # Atualizar a senha
+    hashed = obter_hash_senha(body.nova_senha)
+    cliente_db.senha = hashed
+    db.add(cliente_db)
+    db.commit()
+    db.refresh(cliente_db)
+
+    # 6. Log
+    try:
+        mongodb.logs_eventos.insert_one({
+            "tipo": "REDEFINICAO_SENHA",
+            "id_cliente": cliente_db.idCliente,
+            "data_hora": datetime.utcnow(),
+            "mensagem": "Senha redefinida com sucesso"
+        })
+    except:
+        pass
+
+    return {"mensagem": "Senha alterada com sucesso"}
 
 

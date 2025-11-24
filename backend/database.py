@@ -5,7 +5,6 @@ from pymongo import MongoClient
 from config import settings
 
 # --- 1. Configuração do MySQL (SQLAlchemy) ---
-# Note que agora usamos minúsculas: settings.db_user, settings.db_password, etc.
 SQLALCHEMY_DATABASE_URL = (
     f"mysql+pymysql://{settings.db_user}:{settings.db_password}"
     f"@{settings.db_host}:{settings.db_port}/{settings.db_name}"
