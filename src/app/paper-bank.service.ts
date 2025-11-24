@@ -10,6 +10,7 @@ export class PaperBankService {
 
   // Variável que guarda o saldo para o site todo usar
   saldo: number = 0;
+  nomeUsuario = '';
 
   constructor() {}
 
@@ -30,17 +31,14 @@ export class PaperBankService {
     this.http.get<any>(`${this.apiBase}/saldo`, { headers: headers })
       .subscribe({
         next: (resposta) => {
-          // LOG 1: O que chegou?
-          console.log('1. O Backend mandou:', resposta);
-          
-          // LOG 2: Quanto estava antes?
-          console.log('2. Saldo ANTES da atualização:', this.saldo);
-
           // A ATUALIZAÇÃO
           this.saldo = resposta.saldo; 
 
-          // LOG 3: Quanto ficou depois?
-          console.log('3. Saldo DEPOIS da atualização:', this.saldo);
+          if (resposta.nome_completo) {
+            // Divide o texto nos espaços e pega a primeira parte
+            const primeiroNome = resposta.nome_completo.split(' ')[0];
+            this.nomeUsuario = primeiroNome;
+          }
         },
         error: (erro) => {
           console.error('Erro ao buscar saldo:', erro);
