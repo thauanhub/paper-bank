@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from datetime import datetime, date
 from dateutil.relativedelta import relativedelta
 from decimal import Decimal
+from typing import List
 import random 
 import models, schemas,auth
 from database import engine, get_db, mongodb
@@ -150,11 +151,10 @@ def criar_cartao(
     cliente_atual: models.Cliente = Depends(auth.obter_cliente_atual),
     db: Session = Depends(get_db)
 ):
-    # Gera número do cartão de forma simples: prefixado pelo idCliente + dígitos aleatórios
-    # Repetimos até garantir unicidade na tabela
-    numero_cartao = int(f"{cliente_atual.idCliente}{random.randint(100000000,999999999)}")
+    # Gera número do cartão de forma simples
+    numero_cartao = int(f"{cliente_atual.idCliente}{random.randint(1000000000000000,9999999999999999)}")
     while db.query(models.Cartao).filter(models.Cartao.numeroCartao == numero_cartao).first():
-        numero_cartao = int(f"{cliente_atual.idCliente}{random.randint(100000000,999999999)}")
+        numero_cartao = int(f"{cliente_atual.idCliente}{random.randint(1000000000000000,9999999999999999)}")
 
     # Validade (3 anos a partir de hoje)
     validade = date.today() + relativedelta(years=3)
@@ -189,6 +189,30 @@ def criar_cartao(
         pass
 
     return db_cartao
+
+@app.get("/cartoes", response_model=List[schemas.CartaoSchema])
+def obter_cartoes(
+    cliente_atual: models.Cliente = Depends(auth.obter_cliente_atual),
+    db: Session = Depends(get_db)
+):
+    """Retorna todos os cartões do cliente logado."""
+    cartoes = db.query(models.Cartao).filter(models.Cartao.fk_idCliente == cliente_atual.idCliente).all()
+    return cartoes
+
+@app.get("/cartao/{numero_cartao}", response_model=schemas.CartaoSchema)
+def obter_cartao(
+    numero_cartao: int,
+    cliente_atual: models.Cliente = Depends(auth.obter_cliente_atual),
+    db: Session = Depends(get_db)
+):
+    """Retorna um cartão específico do cliente logado (por numeroCartao)."""
+    cartao = db.query(models.Cartao).filter(
+        models.Cartao.numeroCartao == numero_cartao,
+        models.Cartao.fk_idCliente == cliente_atual.idCliente
+    ).first()
+    if not cartao:
+        raise HTTPException(status_code=404, detail="Cartão não encontrado")
+    return cartao
 
 # --- Rota: Extrato ---
 @app.get("/extrato")
