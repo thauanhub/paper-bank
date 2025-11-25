@@ -60,12 +60,12 @@ Assim que aparecer a mensagem "Compiled successfully", abra o seu navegador e ac
 
 ### 6. Relatório: 1° Medição dos Testes de Carga
 
-## 1. Objetivos do Projeto
+## 6.1. Objetivos do Projeto
 
-### 1.1. Objetivo Geral
+### 6.1.1. Objetivo Geral
 Realizar a análise de desempenho de serviços internos do sistema através de testes de carga, identificando métricas críticas de performance e propondo hipóteses para possíveis gargalos.
 
-### 1.2. Objetivos Específicos
+### 6.1.2. Objetivos Específicos
 - Selecionar um conjunto mínimo de dois serviços internos para análise, garantindo que pelo menos um deles execute operações de escrita no banco de dados.
 - Projetar e executar testes de carga nos serviços selecionados, submetendo-os a diferentes cenários de demanda.
 - Coletar e analisar métricas de desempenho durante os testes, incluindo:
@@ -75,13 +75,13 @@ Realizar a análise de desempenho de serviços internos do sistema através de t
 
 ---
 
-## 2. Resultados do Terminal
+## 6.2. Resultados do Terminal
 
 <img width="1142" height="924" alt="Captura de tela 2025-11-24 181655" src="https://github.com/user-attachments/assets/b677f526-ad62-4cbf-890c-958e3c5653fc" />
 
 ---
 
-## 3. Medições do SLA
+## 6.3. Medições do SLA
 
 ### a) Serviço: Obter Saldo
 - **Tipo**: Leitura  
@@ -109,9 +109,9 @@ Realizar a análise de desempenho de serviços internos do sistema através de t
 
 ---
 
-## 4. Análise dos Resultados
+## 6.4. Análise dos Resultados
 
-### 4.1. Latência × Tempo
+### 6.4.1. Latência × Tempo
 
 
 <img width="990" height="564" alt="Captura de tela 2025-11-24 184551" src="https://github.com/user-attachments/assets/c030bbe0-01fb-49ff-9938-a4595ece3451" />
@@ -122,7 +122,7 @@ Realizar a análise de desempenho de serviços internos do sistema através de t
 - Comportamento esperado, uma vez que operações de escrita são naturalmente mais lentas.
 
 
-### 4.2. Vazão × Tempo
+### 6.4.2. Vazão × Tempo
 
 
 <img width="986" height="624" alt="Captura de tela 2025-11-24 190814" src="https://github.com/user-attachments/assets/90d231f0-9f65-432c-a59e-59b6e0c8160d" />
@@ -133,7 +133,7 @@ Realizar a análise de desempenho de serviços internos do sistema através de t
 - Possíveis causas: limitações na conexão com o banco ou alocação de recursos.
 
 
-### 4.3. Concorrência × Tempo
+### 6.4.3. Concorrência × Tempo
 
 
 <img width="985" height="719" alt="Captura de tela 2025-11-24 194147" src="https://github.com/user-attachments/assets/a963ed63-074f-4f32-820c-2861296ccce6" />
@@ -145,7 +145,7 @@ Realizar a análise de desempenho de serviços internos do sistema através de t
 
 ---
 
-## 5. Conclusão e Pontos Críticos
+## 6.5. Conclusão e Pontos Críticos
 
 ### ✅ Pontos Positivos
 - 100% das requisições processadas com sucesso.  
