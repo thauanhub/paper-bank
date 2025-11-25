@@ -57,5 +57,6 @@ npm start
 Assim que aparecer a mensagem "Compiled successfully", abra o seu navegador e acesse:
 
 👉 http://localhost:4200
-### 6. Testes de Carga
-[Link para o Relatório completo incluindo os testes de Carga](https://github.com/thauanhub/paper-bank/blob/main/Relatório%20de%20Teste%20de%20Carga%20K6.pdf)
+
+### 6. 1° Medição dos Testes de Carga
+[Link para documentação completa](https://github.com/thauanhub/paper-bank/blob/main/Relatório%20de%20Teste%20de%20Carga%20K6.pdf)
