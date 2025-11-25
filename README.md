@@ -87,7 +87,7 @@ Realizar a análise de desempenho de serviços internos do sistema através de t
 - **Tipo**: Leitura  
 - **Arquivos Envolvidos**: [auth.py](https://github.com/thauanhub/paper-bank/blob/main/backend/auth.py)  
 - **Repositório de Medição**: [TestesDeCargaK6-PaperBank](https://github.com/GbosDev/TestesDeCargaK6-PaperBank.git)  
-- **Data**: 16/11/2025  
+- **Data**: 23/11/2025  
 - **Configurações**: Intel i5-1235U, 16GB RAM, Node.js v25.2.1, MySQL + MongoDB  
 
 **Resultados**:
@@ -99,7 +99,7 @@ Realizar a análise de desempenho de serviços internos do sistema através de t
 - **Tipo**: Inserção  
 - **Arquivos Envolvidos**: [auth.py](https://github.com/thauanhub/paper-bank/blob/main/backend/auth.py)  
 - **Repositório de Medição**: [TestesDeCargaK6-PaperBank](https://github.com/GbosDev/TestesDeCargaK6-PaperBank.git)  
-- **Data**: 16/11/2025  
+- **Data**: 23/11/2025  
 - **Configurações**: Intel i5-1235U, 16GB RAM, Node.js v25.2.1, MySQL + MongoDB  
 
 **Resultados**:
