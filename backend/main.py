@@ -1,6 +1,7 @@
 
 from fastapi import FastAPI, Depends, HTTPException, status
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, load_only
+from sqlalchemy import or_
 from datetime import datetime, date
 from dateutil.relativedelta import relativedelta
 from decimal import Decimal
@@ -44,9 +45,15 @@ def obter_saldo(
     cliente_atual: models.Cliente = Depends(auth.obter_cliente_atual),
     db: Session = Depends(get_db)
 ):
-    # Busca a conta vinculada ao cliente logado
+    # OTIMIZAÇÃO: Busca apenas as colunas necessárias (reduz carga na rede/banco)
     conta = db.query(models.ContaBancaria).filter(
         models.ContaBancaria.fk_idCliente == cliente_atual.idCliente
+    ).options(
+        load_only(
+            models.ContaBancaria.numeroConta, 
+            models.ContaBancaria.saldo, 
+            models.ContaBancaria.status
+        )
     ).first()
     
     if not conta:
@@ -55,7 +62,7 @@ def obter_saldo(
     return {
         "nome_cliente": cliente_atual.nome,
         "numero_conta": conta.numeroConta,
-        "saldo": float(conta.saldo),
+        "saldo": conta.saldo, 
         "status": conta.status
     }
 
@@ -229,8 +236,74 @@ def obter_extrato(
 
     # Busca transações onde a conta é origem OU destino
     transacoes = db.query(models.Transacao).filter(
-        (models.Transacao.fk_contaOrigem == conta.numeroConta)
-        (models.Transacao.fk_contaDestino == conta.numeroConta)
+        or_(models.Transacao.fk_contaOrigem == conta.numeroConta, models.Transacao.fk_contaDestino == conta.numeroConta)
     ).order_by(models.Transacao.dataHora.desc()).limit(50).all()
     
     return transacoes
+
+@app.delete("/conta/excluir")
+def excluir_conta(
+    body: schemas.ContaExcluir,
+    cliente_atual: models.Cliente = Depends(auth.obter_cliente_atual),
+    db: Session = Depends(get_db)
+):
+    """Exclui a conta do cliente autenticado se a senha fornecida estiver correta.
+    Deleta recursos dependentes em ordem segura e finalmente remove o cliente.
+    """
+    # Verifica senha
+    if not auth.verificar_senha(body.senha, cliente_atual.senha):
+        raise HTTPException(status_code=400, detail="Senha incorreta")
+
+    try:
+        # Buscar contas associadas
+        contas = db.query(models.ContaBancaria).filter(models.ContaBancaria.fk_idCliente == cliente_atual.idCliente).all()
+
+        for conta in contas:
+            numero = conta.numeroConta
+            # 1) Delete Pix 
+            transacoes_ids = [t.idTransacao for t in db.query(models.Transacao).filter(
+                or_(models.Transacao.fk_contaOrigem == numero, models.Transacao.fk_contaDestino == numero)
+            ).all()]
+            if transacoes_ids:
+                db.query(models.Pix).filter(models.Pix.idPixTransacao.in_(transacoes_ids)).delete(synchronize_session=False)
+
+            # 2) Delete Transacoes
+            db.query(models.Transacao).filter(
+                or_(models.Transacao.fk_contaOrigem == numero, models.Transacao.fk_contaDestino == numero)
+            ).delete(synchronize_session=False)
+
+            # 3) Delete Investimentos
+            db.query(models.Investimento).filter(models.Investimento.fk_numeroConta == numero).delete(synchronize_session=False)
+
+            # 4) Delete Emprestimos
+            db.query(models.Emprestimo).filter(models.Emprestimo.fk_numeroConta == numero).delete(synchronize_session=False)
+
+            # 5) Delete Cartao and Faturas
+            cartoes = db.query(models.Cartao).filter(models.Cartao.fk_idCliente == cliente_atual.idCliente).all()
+            for cartao in cartoes:
+                db.query(models.Fatura).filter(models.Fatura.fk_numeroCartao == cartao.numeroCartao).delete(synchronize_session=False)
+                db.query(models.Cartao).filter(models.Cartao.numeroCartao == cartao.numeroCartao).delete(synchronize_session=False)
+
+            # 6) Delete conta bancária
+            db.query(models.ContaBancaria).filter(models.ContaBancaria.numeroConta == numero).delete(synchronize_session=False)
+
+        # 8) Delete the cliente
+        db.query(models.Cliente).filter(models.Cliente.idCliente == cliente_atual.idCliente).delete(synchronize_session=False)
+        db.commit()
+
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Erro ao excluir conta: {str(e)}")
+
+    # Log action to Mongo
+    try:
+        mongodb.logs_eventos.insert_one({
+            "tipo": "EXCLUSAO_CONTA",
+            "fk_idUsuario": cliente_atual.idCliente,
+            "data_hora": datetime.utcnow(),
+            "mensagem": "Conta excluída pelo usuário"
+        })
+    except Exception:
+        pass
+
+    return {"mensagem": "Conta e dados associados excluídos com sucesso"}

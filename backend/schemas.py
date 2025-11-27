@@ -17,8 +17,8 @@ class ClienteSchema(BaseModel):
 
     idCliente: Optional[int] = None
     nome: str
-    cpf: str = Field(..., max_length=14)
-    senha: str
+    cpf: str = Field(..., min_length=11, max_length=11)
+    senha: str = Field(..., min_length=8)
     endereco: Optional[str] = None
     telefone: Optional[str] = None
     email: EmailStr
@@ -143,8 +143,12 @@ class PixSchema(BaseModel):
 # --- Input: Redefinir/Alterar Senha ---
 class SenhaRedefinir(BaseModel):
     senha_atual: str
-    nova_senha: str
+    nova_senha: str = Field(..., min_length=8)
     confirmar_nova_senha: Optional[str] = None
+
+
+class ContaExcluir(BaseModel):
+    senha: str
 # --- Schemas para MongoDB (NoSQL) ---
 class detalhesFeedback(BaseModel):
         feature: Optional[str] = None
