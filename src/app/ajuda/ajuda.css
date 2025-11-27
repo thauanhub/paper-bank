@@ -59,3 +59,105 @@ hr {
         width: 100%;
     }
 }
+
+/* --- ESTILOS DOS MODAIS --- */
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: #fff;
+    color: #333;
+    padding: 30px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+}
+
+.modal-content h3 {
+    margin-top: 0;
+    color: #228B22;
+    margin-bottom: 20px;
+}
+
+.modal-content input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.modal-content label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    font-size: 0.9em;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.btn-cancel {
+    background-color: #ccc;
+    color: #333;
+}
+
+.btn-confirm {
+    background-color: #228B22;
+    color: white;
+}
+
+.btn-confirm:hover {
+    background-color: #1a6b1a;
+}
+
+/* --- Feedback Box (Sucesso/Erro) --- */
+.feedback-box {
+    text-align: center;
+    max-width: 320px;
+}
+
+.feedback-icon {
+    font-size: 3rem;
+    margin-bottom: 10px;
+}
+
+.feedback-box p {
+    font-size: 1.1rem;
+    color: #555;
+    margin-bottom: 20px;
+}
+
+.centered {
+    justify-content: center;
+}
+
+/* Estilo para Erro */
+.erro-box h3 {
+    color: #d9534f;
+}
+
+.erro-box .btn-confirm {
+    background-color: #d9534f;
+}
+
+.erro-box .btn-confirm:hover {
+    background-color: #c9302c;
+}

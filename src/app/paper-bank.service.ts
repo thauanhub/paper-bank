@@ -45,4 +45,20 @@ export class PaperBankService {
         }
       });
   }
+
+  // Método para redefinir a senha
+  redefinirSenha(senhaAtual: string, novaSenha: string, confirmacao: string) {
+    const token = localStorage.getItem('access_token');
+    const headers = new HttpHeaders({ 'Authorization': `Bearer ${token}` });
+
+    const body = {
+      senha_atual: senhaAtual,
+      nova_senha: novaSenha,
+      confirmar_nova_senha: confirmacao
+    };
+
+    // Retorna o Observable para o componente lidar com sucesso/erro
+    return this.http.post<any>(`${this.apiBase}/auth/redefinir-senha`, body, { headers });
+  }
+
 }

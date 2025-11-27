@@ -1,4 +1,3 @@
-<p>ajuda works!</p>
 <div class="page-container">
 
     <section class="page-header">
@@ -19,7 +18,7 @@
             <h2>Recuperação de Acesso</h2>
             <hr />
             <p>Redefina sua senha rapidamente de forma segura.</p>
-            <button class="btn">Redefinir senha</button>
+            <button class="btn" (click)="abrirModal()">Redefinir senha</button>
         </div>
 
         <div class="card">
@@ -41,4 +40,50 @@
 
     </section>
 
+</div>
+
+<div class="modal-overlay" *ngIf="modalAberto">
+    <div class="modal-content">
+        <h3>Alterar Senha</h3>
+        
+        <label>Senha Atual</label>
+        <input type="password" [(ngModel)]="senhaAtual" placeholder="Digite sua senha atual">
+
+        <label>Nova Senha</label>
+        <input type="password" [(ngModel)]="novaSenha" placeholder="Digite a nova senha">
+
+        <label>Confirmar Nova Senha</label>
+        <input type="password" [(ngModel)]="confirmacao" placeholder="Confirme a nova senha">
+
+        <div class="modal-actions">
+            <button type="button" class="btn btn-cancel" (click)="fecharModal()">Cancelar</button>
+            
+            <button 
+                type="button" 
+                class="btn btn-confirm" 
+                (click)="enviarRedefinicao()"
+                [disabled]="carregando"
+                [style.opacity]="carregando ? '0.5' : '1'">
+                
+                {{ carregando ? 'Salvando...' : 'Salvar' }}
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" *ngIf="feedbackAberto">
+    <div class="modal-content feedback-box" [class.erro-box]="feedbackTipo === 'erro'">
+        
+        <div class="feedback-icon">
+            {{ feedbackTipo === 'sucesso' ? '✅' : '❌' }}
+        </div>
+
+        <h3>{{ feedbackTipo === 'sucesso' ? 'Sucesso!' : 'Atenção' }}</h3>
+        
+        <p>{{ feedbackMensagem }}</p>
+
+        <div class="modal-actions centered">
+            <button class="btn btn-confirm" (click)="fecharFeedback()">Entendido</button>
+        </div>
+    </div>
 </div>
