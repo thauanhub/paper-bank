@@ -1,7 +1,9 @@
 
-from fastapi import FastAPI, Depends, HTTPException, status
+import asyncio
+from fastapi import FastAPI, Depends, HTTPException, status, WebSocket, WebSocketDisconnect, Query
 from sqlalchemy.orm import Session, load_only
 from sqlalchemy import or_
+from jose import JWTError, jwt
 from datetime import datetime, date
 from dateutil.relativedelta import relativedelta
 from decimal import Decimal
@@ -11,6 +13,7 @@ import models, schemas,auth
 from database import engine, get_db, mongodb
 import mongo_routes
 from fastapi.middleware.cors import CORSMiddleware
+from config import settings
 # Cria tabelas se não existirem
 models.Base.metadata.create_all(bind=engine)
 
@@ -65,6 +68,62 @@ def obter_saldo(
         "saldo": conta.saldo, 
         "status": conta.status
     }
+
+@app.websocket("/ws/saldo")
+async def websocket_saldo(
+    websocket: WebSocket, 
+    token: str = Query(...), 
+    db: Session = Depends(get_db)
+):
+    # Aceitar a conexão inicial
+    await websocket.accept()
+    
+    try:
+        payload = jwt.decode(token, settings.secret_key, algorithms=[settings.algorithm])
+        cliente_id = int(payload.get("sub"))
+    
+        cliente = db.query(models.Cliente).filter(models.Cliente.idCliente == cliente_id).first()
+        if not cliente:
+            await websocket.close(code=4001)
+            return
+
+        # Loop de Atualização em Tempo Real
+        while True:
+            conta = db.query(models.ContaBancaria).filter(
+                models.ContaBancaria.fk_idCliente == cliente.idCliente
+            ).options(
+                load_only(
+                    models.ContaBancaria.saldo, 
+                    models.ContaBancaria.status
+                )
+            ).first()
+
+            if conta:
+                dados_envio = {
+                    "saldo": float(conta.saldo), # Convertendo para JSON
+                    "status": conta.status,
+                    "timestamp": datetime.now().isoformat()
+                }
+                await websocket.send_json(dados_envio)
+            
+            # Aguardar um tempo antes da próxima checagem (Simulação de Real-time)
+            await asyncio.sleep(5) # Atualiza a cada 5 segundos
+
+    except (JWTError, ValueError):
+            # Token inválido
+        print("Erro de autenticação no WebSocket")
+        await websocket.close(code=4003)
+        
+    except WebSocketDisconnect:
+        # Cliente desconectou (fechou a aba)
+        print(f"Cliente {cliente_id} desconectou do saldo.")
+        
+    except Exception as e:
+        print(f"Erro no WebSocket: {e}")
+        try:
+            await websocket.close()
+        except:
+            pass
 
 # --- Rota: Transferência PIX ---
 @app.post("/transferir-pix", response_model=schemas.TransacaoResponse)
