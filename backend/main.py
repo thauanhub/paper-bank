@@ -126,7 +126,7 @@ async def websocket_saldo(
             pass
 
 # --- Rota: Transferência PIX ---
-@app.post("/transferir-pix", response_model=schemas.TransacaoResponse)
+@app.post("/transferir-pix")
 def transferir_pix(
     transacao_in: schemas.PixCreate,
     cliente_atual: models.Cliente = Depends(auth.obter_cliente_atual),
@@ -207,7 +207,13 @@ def transferir_pix(
     except:
         pass
 
-    return db_transacao
+    return {
+        "mensagem": "Transferência realizada com sucesso!",
+        "id_transacao": db_transacao.idTransacao,
+        "valor": float(db_transacao.valor),
+        "status": "CONCLUIDA",
+        "novo_saldo_origem": float(conta_origem.saldo) # Já mandamos o saldo novo para o front aproveitar
+    }
 
 
 # --- Rota: Criar Cartão de Crédito ---
