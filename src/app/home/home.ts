@@ -40,38 +40,93 @@ export class HomeComponent implements OnInit {
   exibirModalTransferencia = false;
   exibirModalEmprestimo = false;
   valorTransferencia: number | null = null;
+  chavePixDestino: string = '';
+  senhaTransacao: string = '';
   valorEmprestimo: number | null = null;
+  // Estado de Carregamento
+  carregando = false;
+
+  // --- Variáveis de Feedback ---
+  feedbackAberto = false;
+  feedbackMensagem = '';
+  feedbackTipo: 'sucesso' | 'erro' = 'sucesso';
 
   // Controles de abrir/fechar
   abrirModalTransferencia() { this.exibirModalTransferencia = true; this.valorTransferencia = null; }
-  fecharModalTransferencia() { this.exibirModalTransferencia = false; }
   abrirModalEmprestimo() { this.exibirModalEmprestimo = true; this.valorEmprestimo = null; }
   fecharModalEmprestimo() { this.exibirModalEmprestimo = false; }
 
-  // --- Lógica de Transferência ---
-  confirmarTransferencia() {
+  mostrarFeedback(msg: string, tipo: 'sucesso' | 'erro') {
+    this.feedbackMensagem = msg;
+    this.feedbackTipo = tipo;
+    this.feedbackAberto = true;
+    this.cdr.detectChanges();
+  }
+
+  fecharFeedback() {
+    this.feedbackAberto = false;
+  }
+
+confirmarTransferencia() {
+   if (this.carregando) return;
+
     if (!this.valorTransferencia || this.valorTransferencia <= 0) {
-      alert("Valor inválido.");
+      this.mostrarFeedback("Valor inválido.", 'erro');
       return;
     }
-    // Usamos 'this.pb.saldo' agora
-    if (this.valorTransferencia > this.pb.saldo) {
-      alert("Saldo insuficiente.");
+    if (!this.chavePixDestino) {
+      this.mostrarFeedback("Digite a chave PIX.", 'erro');
+      return;
+    }
+    if (!this.senhaTransacao) {
+      this.mostrarFeedback("Digite sua senha.", 'erro');
       return;
     }
 
-    // Atualiza no Service (Cofre)
-    this.pb.saldo -= this.valorTransferencia;
+    // 1. Bloqueia
+    this.carregando = true;
+    this.cdr.detectChanges();
 
-    this.historico.unshift({
-      tipo: 'Enviado',
-      valor: this.valorTransferencia,
-      data: new Date(),
-      entrada: false
-    });
-    
-    alert(`Transferência enviada!`);
-    this.fecharModalTransferencia();
+    /// 2. Envia
+    this.pb.realizarPix(this.valorTransferencia, this.chavePixDestino, this.senhaTransacao)
+      .subscribe({
+        next: (res) => {
+          // Fecha modal de formulário
+          this.fecharModalTransferencia();
+          
+         if (res.novo_saldo_origem !== undefined) {
+             this.pb.saldo = res.novo_saldo_origem;
+          } else {
+             // Se não mandou, busca do jeito antigo
+             this.pb.carregarSaldo();
+          }
+
+          // Feedback Positivo
+          this.mostrarFeedback("PIX enviado com sucesso!", 'sucesso');
+          
+          // Histórico Visual (Opcional, pois o backend já registra)
+          this.historico.unshift({
+            tipo: 'Enviado', valor: this.valorTransferencia!, data: new Date(), entrada: false
+          });
+
+          setTimeout(() => { this.cdr.detectChanges(); }, 1000);
+        },
+        error: (err) => {
+          console.error(err);
+          const msg = err.error.detail || "Erro ao realizar PIX";
+          this.mostrarFeedback("Falha: " + msg, 'erro');
+        }
+      })
+      .add(() => {
+        this.carregando = false; // Destrava o botão
+        this.cdr.detectChanges(); // Atualiza a tela
+      });
+  }
+  
+  // Dica: Limpe a senha também ao fechar o modal (cancelar)
+  fecharModalTransferencia() { 
+      this.exibirModalTransferencia = false; 
+      this.senhaTransacao = ''; 
   }
 
   // --- Lógica de Empréstimo ---

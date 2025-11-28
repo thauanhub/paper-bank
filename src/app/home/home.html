@@ -10,34 +10,28 @@
       <section class="main-container-content">
           <article class="main-container-content-saldo">
               <p>Saldo do PaperBank</p>
-              <p id="valor-saldo">{{ pb.saldo | currency:'BRL' }}</p>
+              <p *ngIf="pb.carregandoSaldo" style="opacity: 0.5; font-size: 1.5rem;">...</p>
+              <p *ngIf="!pb.carregandoSaldo" id="valor-saldo">{{ pb.saldo | currency:'BRL' }}</p>
           </article>
 
           <article class="main-container-content-historico">
                 <p>Histórico</p>
-    
                 <ul class="lista-transacoes">
-        
                     <li *ngFor="let item of historico" class="item-transacao">
-            
                         <div class="transacao-info">
                             <span class="transacao-tipo">{{ item.tipo }}</span>
                             <span class="transacao-data">{{ item.data | date:'dd/MM HH:mm' }}</span>
                         </div>
-
                         <div class="transacao-valor" 
                             [class.valor-entrada]="item.entrada" 
                             [class.valor-saida]="!item.entrada">
-                
                             {{ item.entrada ? '+' : '-' }} 
                             {{ item.valor | currency:'BRL' }}
                         </div>
                     </li>
-
                     <li *ngIf="historico.length === 0" class="sem-transacoes">
                     Nenhuma transação recente.
                     </li>
-
                 </ul>
             </article>
       </section>
@@ -51,26 +45,80 @@
   </main>
 </div>
 
-<div id="modal-transferencia" [class.modal-oculto]="!exibirModalTransferencia" class="modal-visivel">
-  <div class="modal-conteudo">
-      <h3>Transferência de Saldo</h3>
-      <p>Quanto deseja enviar?</p>
-      <input type="number" [(ngModel)]="valorTransferencia" placeholder="0.00" min="0" step="0.01">
+<div class="modal-overlay" *ngIf="exibirModalTransferencia">
+  <div class="modal-content">
+      
+      <div class="modal-header">
+          <h3>💸 Transferência PIX</h3>
+          <p>Envie dinheiro em segundos.</p>
+      </div>
+      
+      <div class="input-group">
+          <label>Para quem?</label>
+          <input type="email" [(ngModel)]="chavePixDestino" placeholder="Chave PIX (E-mail)">
+      </div>
+
+      <div class="input-group">
+          <label>Qual valor?</label>
+          <div class="input-money">
+              <span>R$</span>
+              <input type="number" [(ngModel)]="valorTransferencia" placeholder="0.00">
+          </div>
+      </div>
+      
+      <div class="input-group">
+          <label>Confirme sua senha</label>
+          <input type="password" [(ngModel)]="senhaTransacao" placeholder="Senha de login">
+      </div>
+      
       <div class="modal-botoes">
-          <button (click)="fecharModalTransferencia()" class="btn-cancelar">Cancelar</button>
-          <button (click)="confirmarTransferencia()" class="btn-confirmar">Confirmar Envio</button>
+          <button class="btn-cancelar" (click)="fecharModalTransferencia()">Cancelar</button>
+          
+          <button class="btn-confirmar" 
+                  (click)="confirmarTransferencia()"
+                  [disabled]="carregando"
+                  [style.opacity]="carregando ? '0.6' : '1'">
+              {{ carregando ? 'Enviando...' : 'Confirmar PIX' }}
+          </button>
       </div>
   </div>
 </div>
 
-<div id="modal-emprestimo" [class.modal-oculto]="!exibirModalEmprestimo" class="modal-visivel">
-  <div class="modal-conteudo">
-      <h3>Empréstimo</h3>
-      <p>Quanto deseja receber?</p>
-      <input type="number" [(ngModel)]="valorEmprestimo" placeholder="0.00" min="0" step="0.01">
+<div class="modal-overlay" *ngIf="exibirModalEmprestimo">
+  <div class="modal-content">
+      <div class="modal-header">
+          <h3>💰 Empréstimo</h3>
+          <p>Crédito rápido na sua conta.</p>
+      </div>
+
+      <div class="input-group">
+          <label>Quanto deseja receber?</label>
+          <div class="input-money">
+              <span>R$</span>
+              <input type="number" [(ngModel)]="valorEmprestimo" placeholder="0.00" min="0">
+          </div>
+      </div>
+
       <div class="modal-botoes">
-          <button (click)="fecharModalEmprestimo()" class="btn-cancelar">Cancelar</button>
-          <button (click)="confirmarEmprestimo()" class="btn-confirmar">Confirmar Envio</button>
+          <button class="btn-cancelar" (click)="fecharModalEmprestimo()">Cancelar</button>
+          <button class="btn-confirmar" (click)="confirmarEmprestimo()">Confirmar Envio</button>
       </div>
   </div>
+</div>
+
+<div class="modal-overlay" *ngIf="feedbackAberto">
+    <div class="modal-content feedback-box" [class.erro-box]="feedbackTipo === 'erro'">
+        
+        <div class="feedback-icon">
+            {{ feedbackTipo === 'sucesso' ? '✅' : '❌' }}
+        </div>
+
+        <h3>{{ feedbackTipo === 'sucesso' ? 'Sucesso!' : 'Ops!' }}</h3>
+        
+        <p>{{ feedbackMensagem }}</p>
+
+        <div class="modal-botoes centered">
+            <button class="btn-confirmar" (click)="fecharFeedback()">Entendido</button>
+        </div>
+    </div>
 </div>

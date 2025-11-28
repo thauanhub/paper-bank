@@ -187,3 +187,153 @@ input[type="number"] {
 .lista-transacoes::-webkit-scrollbar-thumb:hover {
     background-color: #3da363; /* Um verde um pouco mais escuro */
 }
+
+/* 1. O Fundo Escuro (O Segredo do Posicionamento) */
+.modal-overlay {
+    position: fixed; /* OBRIGATÓRIO: Faz sair do fluxo da página e flutuar */
+    top: 0;
+    left: 0;
+    width: 100vw; /* Largura total da janela */
+    height: 100vh; /* Altura total da janela */
+    background-color: rgba(0, 0, 0, 0.6); /* Escurece o fundo */
+    
+    /* Centraliza a caixa branca no meio exato */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    z-index: 9999; /* Garante que fica na frente de tudo */
+    backdrop-filter: blur(3px); /* Desfoque moderno no fundo */
+}
+
+/* 2. A Caixa Branca do Modal */
+.modal-content {
+    background-color: white;
+    color: #333;
+    padding: 30px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 420px; /* Largura máxima para não ficar gigante */
+    box-shadow: 0 15px 40px rgba(0,0,0,0.4); /* Sombra suave */
+    
+    /* Animação suave ao abrir */
+    animation: surgir 0.3s ease-out;
+}
+
+@keyframes surgir {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* Cabeçalho do Modal */
+.modal-header h3 {
+    margin-top: 0;
+    color: #228B22; /* Verde PaperBank */
+    font-size: 1.5rem;
+}
+
+.modal-header p {
+    color: #666;
+    margin-bottom: 20px;
+}
+
+/* 3. Estilo dos Inputs */
+.input-group {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.input-group label {
+    display: block;
+    font-weight: bold;
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    box-sizing: border-box; /* Impede que o input estoure a caixa */
+}
+
+/* Input especial de Dinheiro (com o R$ fixo) */
+.input-money {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding-left: 10px;
+    background: #fff;
+}
+
+.input-money span {
+    font-weight: bold;
+    color: #228B22;
+    margin-right: 5px;
+}
+
+.input-money input {
+    border: none; /* Remove a borda do input interno */
+    outline: none; /* Remove o brilho azul ao clicar */
+}
+
+/* 4. Botões do Modal */
+.modal-botoes {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 25px;
+}
+
+.btn-cancelar, .btn-confirmar {
+    flex: 1; /* Faz os botões terem o mesmo tamanho */
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.btn-cancelar {
+    background-color: #e0e0e0;
+    color: #333;
+}
+
+.btn-confirmar {
+    background-color: #228B22;
+    color: white;
+    transition: background 0.2s;
+}
+
+.btn-confirmar:hover {
+    background-color: #1a6b1a;
+}
+
+.btn-confirmar:disabled {
+    background-color: #9ccc9c;
+    cursor: not-allowed;
+}
+
+/* 5. Estilo para o Feedback (Sucesso/Erro) */
+.feedback-box {
+    text-align: center;
+    max-width: 320px;
+}
+
+.feedback-icon {
+    font-size: 3.5rem;
+    margin-bottom: 10px;
+}
+
+.centered {
+    justify-content: center;
+}
+
+/* Cor especial para Erro */
+.erro-box h3 { color: #d9534f; }
+.erro-box .btn-confirmar { background-color: #d9534f; }
