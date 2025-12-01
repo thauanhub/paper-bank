@@ -200,7 +200,7 @@ Os resultados a seguir detalham a análise dos ajustes, focando em métricas cr�
 
 ---
 
-## 6.3. Resultado das Mediões Comparativamente
+## 6.3. Resultado das Medições Comparativamente
 
 ### 6.3.1. Resultado no Terminal
 
