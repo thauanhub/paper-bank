@@ -174,6 +174,282 @@ Realizar a análise de desempenho de serviços internos do sistema através de t
 
 ---
 
+### 6. Relatório: 2° Medição dos Testes de Carga
+
+#### 6.1. Objetivo Geral
+
+Este documento demonstra o segundo teste de carga a fim de comparação entre os resultados de dois testes realizados sequencialmente no sistema.  
+O 1° teste representa a configuração inicial, enquanto o 2° teste foi executado após a implementação de otimizações de performance e a adição de um novo endpoint (`DELETE /conta/excluir`).
+
+A comparação direta dos dados permite avaliar o impacto das melhorias técnicas na capacidade de resposta e estabilidade do sistema sob carga.  
+Ambos os testes mantiveram uma taxa de sucesso de **100%** em todas as requisições, demonstrando a robustez da aplicação mesmo com a expansão de funcionalidades.
+
+Os resultados a seguir detalham a análise dos ajustes, focando em métricas críticas como **latência, vazão e concorrência** entre os dois cenários.
+
+---
+
+## 6.2. Descrição das Otimizações
+
+### 6.2.1. Otimização da Consulta de Saldo
+- Implementação de query seletiva utilizando `load_only` para retornar exclusivamente as colunas necessárias, reduzindo a complexidade computacional.
+- Remoção da conversão redundante do saldo para `float()`, preservando a integridade dos dados no formato original.
+
+### 6.2.2. Otimização do Processo de Registro
+- Implementação de **processamento assíncrono de logs** mediante integração da biblioteca `BackgroundTasks`, permitindo que a geração de logs ocorra após a confirmação de sucesso, sem bloquear requisições subsequentes.
+- Unificação das operações de banco relacionadas às entidades *Cliente* e *Conta*, substituindo múltiplos commits por `db.flush()` para garantir geração de IDs, com um único `db.commit()` final para minimizar operações de escrita.
+
+---
+
+## 6.3. Resultado das Mediões Comparativamente
+
+### 6.3.1. Resultado no Terminal
+
+
+<img width="1047" height="812" alt="T2" src="https://github.com/user-attachments/assets/1e889e31-6aa2-4268-a2d3-46cea6f8de00" />
+
+
+---
+
+### 6.3.2. Medições do SLA
+
+**Serviço:** Obter Saldo (`ObterSaldo.js`)  
+**Tipo de operação:** leitura  
+**Arquivos envolvidos:**  
+- Backend: `auth.py`  
+- Código de medição SLA: repositório de testes K6  
+**Configurações:**  
+12th Gen Intel Core i5-1235U, 16 GB RAM, 64 bits, Node.js v25.2.1, MySQL + MongoDB
+
+---
+
+### 📊 Medição 1  
+**Data:** 23/11/2025  
+**Latência:** 30.37 ms (média), 129.71 ms (p95)  
+**Vazão:** 6.16 req/s  
+**Concorrência:** 1 VU
+
+**Potenciais gargalos:**
+- Consultas não otimizadas retornando mais dados que o necessário.  
+- Overhead na conversão/manipulação dos dados.  
+- Picos iniciais indicando falta de mecanismos de aquecimento (cache/preload).
+
+---
+
+### 📊 Medição 2  
+**Data:** DD/MM/AAAA  
+**Latência:** 30.11 ms (média), 120.100 ms (p95)  
+**Vazão:** 0.7761 req/s  
+**Concorrência:** 1 VU  
+
+---
+
+### Gráficos comparativos  
+**Gráfico Teste 1:**  
+
+<img width="990" height="564" alt="Captura de tela 2025-11-24 184551" src="https://github.com/user-attachments/assets/76d8a584-7784-4813-8df1-e183cc9c893f" />
+
+**Gráfico Teste 2:**  
+
+<img width="1183" height="606" alt="Captura de tela 2025-11-30 130721" src="https://github.com/user-attachments/assets/1e939657-dd71-4de7-8218-46e8aaaf7007" />
+
+
+**Análises:**
+- Redução clara dos picos de latência no Teste 2.  
+- Curvas com menor dispersão e maior estabilidade.  
+- O uso de `load_only` e remoção de conversões desnecessárias reduziram a variação.
+
+---
+
+### Melhorias/Otimizações  
+**Melhorias**
+- Query Seletiva com o load_only: 
+    1) Retorna apenas as colunas necessárias para a consulta, diminuindo complexidade computacional.
+    2) Remoção de conversão do saldo para float(): desnecessária para garantir integridade dos dados.
+    
+**Arquivo modificado**
+- https://github.com/thauanhub/paper-bank/blob/main/backend/main.py
+
+
+---
+
+## Serviço: Registrar Cliente (`RegistrarCliente.js`)
+**Tipo de operação:** inserção  
+**Arquivos envolvidos:** backend `auth.py`, repositório K6  
+**Configurações:** mesmas do teste anterior
+
+---
+
+### 📊 Medição 1  
+**Data:** 23/11/2025  
+**Latência:** 543.154 ms (média), 713.834 ms (p95)  
+**Vazão:** 6.16 req/s  
+**Concorrência:** 1 VU  
+
+**Potenciais gargalos:**
+- Múltiplas operações de gravação (commits redundantes).  
+- Log síncrono atrasando respostas.  
+- Validações repetidas aumentando o tempo total.
+
+---
+
+### 📊 Medição 2  
+**Data:** DD/MM/AAAA  
+**Latência:** 520.851 ms (média), 799.90 ms (p95)  
+**Vazão:** 0.7761 req/s  
+**Concorrência:** 1 VU  
+
+---
+
+### Gráficos comparativos  
+**Gráfico Teste 1:** 
+
+<img width="986" height="624" alt="Captura de tela 2025-11-24 190814" src="https://github.com/user-attachments/assets/afbcb693-50ff-428c-8c3b-da8bf2a82f11" />
+
+**Gráfico Teste 2:**
+
+<img width="1232" height="683" alt="Captura de tela 2025-11-30 130738" src="https://github.com/user-attachments/assets/663bedbb-d464-4c50-9f44-ed11b8252fd4" />
+
+
+**Análises:**
+- Teste 2 com maior estabilidade e menor oscilação.  
+- Menor variação entre picos e quedas.  
+- Commit único e logs assíncronos reduziram bloqueios internos.
+
+---
+
+### Melhorias/Otimizações  
+**Melhorias**
+- Processamento assíncrono de logs: 
+    1) Importando a biblioteca BackgroundTasks que realiza o log através de uma função auxiliar após o retorno de sucesso sem bloquear a próxima requisição
+    2) Unificação de operações Cliente e Conta para o banco de dados: 
+        - Havia mais de um commit na sessão no banco de dados, substituído pelo db.flush() para garantir que os ids sejam gerados e apenas no final seja realizado o db.commit() para reduzir a escrita no disco.
+
+**Arquivo modificado**
+- https://github.com/thauanhub/paper-bank/blob/main/backend/auth.py
+
+
+---
+
+## Serviço: Excluir Conta (`ExcluirConta.js`)
+**Tipo de operação:** remoção  
+**Arquivos envolvidos:** backend `auth.py`, repositório K6  
+**Configurações:** mesmas anteriores
+
+---
+
+### 📊 Medição 1  
+**Data:** 23/11/2025  
+**Latência:** 378.77 ms (média), 492.52 ms (p95)  
+**Vazão:** 0.783 req/s  
+**Concorrência:** 1 VU  
+
+**Potenciais gargalos:**
+- Verificação + remoção múltipla (Cliente + Conta).  
+- Possível falta de indexação.  
+- Escritas finais no banco podem variar com concorrência.
+
+---
+
+### Gráficos comparativos  
+**Gráfico Teste 1:** 
+
+<img width="985" height="719" alt="Captura de tela 2025-11-24 194147" src="https://github.com/user-attachments/assets/0f1f2cc1-539c-427e-af5c-c09a8ca3c0d3" />
+
+**Gráfico Teste 2:** 
+
+<img width="1185" height="576" alt="Captura de tela 2025-11-30 130638" src="https://github.com/user-attachments/assets/3f18ce3a-4cd8-4c44-a4f7-db3edc2dab8f" />
+
+
+**Análises:**
+- No Teste 2, todos os 10 VUs permaneceram ativos e operando.  
+- Indica menor bloqueio interno e execução mais suave.  
+- A operação de exclusão manteve estabilidade e previsibilidade.
+
+---
+
+# 6.4. Análise completa dos novos resultados do teste de carga
+
+## 6.4.1. Gráfico de Latência × Tempo
+
+<img width="1183" height="606" alt="Captura de tela 2025-11-30 130721" src="https://github.com/user-attachments/assets/70331d81-3104-4125-9a6b-107b2b380861" />
+
+**Registrar Cliente**
+- Executado principalmente no início e meio do teste.  
+- Latência média entre 320–500 ms.  
+- Picos de ~1000 ms.
+
+**Obter Saldo**
+- Extremamente rápido: 5–40 ms após estabilização.  
+- Pequenos picos iniciais (~300 ms).  
+- Excelente estabilidade.
+
+**Excluir Conta**
+- Executado mais no final.  
+- Latências entre 300–450 ms, picos de ~600 ms.
+
+### Conclusão
+- **obter_saldo**: desempenho excelente.  
+- **registrar_cliente**: mais sensível à carga.  
+- **excluir_conta**: intermediário e estável.  
+- Com 10 VUs, o sistema responde adequadamente.
+
+---
+
+## 6.4.2. Gráfico de Vazão (req/s) × Tempo
+
+<img width="1232" height="683" alt="Captura de tela 2025-11-30 130738" src="https://github.com/user-attachments/assets/f30fc0be-51e6-4a88-a1f8-3c8f9aa9b70e" />
+
+**Registrar Cliente**
+- Entre 1 e 10 req/s, com alta variação.
+
+**Obter Saldo**
+- Forte atividade no meio do teste.  
+- Picos próximos a 10 req/s.
+
+**Excluir Conta**
+- Vazão constante entre 2–4 req/s.
+
+### Conclusão
+- Vazão coerente com custo dos endpoints.  
+- Sistema não saturou.  
+- Endpoints rápidos ⇒ maior vazão; lentos ⇒ menor vazão.
+
+---
+
+## 6.4.3. Gráfico de Concorrência × Tempo
+
+<img width="1185" height="576" alt="Captura de tela 2025-11-30 130638" src="https://github.com/user-attachments/assets/6b8c9bca-fcee-43d0-8289-5a6fc9929575" />
+
+- VUs sobem para 10 rapidamente e permanecem estáveis.  
+- Concorrência fixa: carga constante.  
+- Nenhuma evidência de saturação.
+
+### Conclusão
+- O sistema absorveu 10 VUs sem queda.  
+- Latência alta em `registrar_cliente` é natural e não gargalo de concorrência.
+
+---
+
+## 6.5. Conclusão Geral dos Testes
+
+Os testes demonstram impacto positivo das otimizações aplicadas:
+
+- **Medição 1:**  
+  Latência mais irregular, vazão inconsistente e maior imprevisibilidade.
+
+- **Medição 2:**  
+  Redução de picos, maior estabilidade e melhor distribuição de custo.
+
+**Destaques:**
+- `obter_saldo`: extremamente estável após otimizações.  
+- `registrar_cliente`: operação mais fluida com logs assíncronos e commit único.  
+- `excluir_conta`: desempenho sólido sob 10 VUs.
+
+**Conclusão final:**  
+O sistema evoluiu de forma significativa em responsividade, estabilidade e previsibilidade, mantendo **100% de sucesso** nas requisições e criando base sólida para novos ciclos de otimização e escalabilidade.
+
+--- 
+
 **Desenvolvido por**:  
 Rhuan Soares, Thauan Fabrício, Gabriel de Oliveira  
 **UNIRIO**
