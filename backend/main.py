@@ -304,7 +304,20 @@ def obter_extrato(
         or_(models.Transacao.fk_contaOrigem == conta.numeroConta, models.Transacao.fk_contaDestino == conta.numeroConta)
     ).order_by(models.Transacao.dataHora.desc()).limit(50).all()
     
-    return transacoes
+    resultado = []
+    for t in transacoes:
+        # Lógica: Se a conta destino for a minha, é Entrada (True). 
+        # Se não, fui eu que enviei (False).
+        e_entrada = (t.fk_contaDestino == conta.numeroConta)
+        
+        resultado.append({
+            "tipo": t.tipo,       # Ex: "PIX", "EMPRESTIMO"
+            "valor": float(t.valor), # Converte Decimal para float
+            "data": t.dataHora,
+            "entrada": e_entrada  # O Angular usa isso para pintar de verde/vermelho
+        })
+
+    return resultado
 
 @app.delete("/conta/excluir")
 def excluir_conta(
@@ -372,3 +385,39 @@ def excluir_conta(
         pass
 
     return {"mensagem": "Conta e dados associados excluídos com sucesso"}
+
+# Adicione 'distinct' aos imports do sqlalchemy, se não tiver
+# from sqlalchemy import distinct
+
+@app.get("/contatos")
+def listar_contatos_recentes(
+    cliente_atual: models.Cliente = Depends(auth.obter_cliente_atual),
+    db: Session = Depends(get_db)
+):
+    # 1. Descobrir a conta do usuário logado
+    minha_conta = db.query(models.ContaBancaria).filter(
+        models.ContaBancaria.fk_idCliente == cliente_atual.idCliente
+    ).first()
+
+    if not minha_conta:
+        return []
+
+    # 2. Buscar destinos únicos (JOIN: Transacao -> Conta Destino -> Cliente Destino)
+    # Tradução: "Me dê o Nome e Email dos clientes que receberam dinheiro da minha conta"
+    destinatarios = db.query(models.Cliente.nome, models.Cliente.email)\
+        .join(models.ContaBancaria, models.ContaBancaria.fk_idCliente == models.Cliente.idCliente)\
+        .join(models.Transacao, models.Transacao.fk_contaDestino == models.ContaBancaria.numeroConta)\
+        .filter(models.Transacao.fk_contaOrigem == minha_conta.numeroConta)\
+        .distinct()\
+        .all()
+
+    # 3. Formatar para JSON
+    lista_contatos = []
+    for nome, email in destinatarios:
+        lista_contatos.append({
+            "nome": nome,
+            "email": email,
+            "inicial": nome[0].upper() # Para fazer um ícone bonito com a letra
+        })
+
+    return lista_contatos

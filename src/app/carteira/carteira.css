@@ -105,3 +105,47 @@ button{
     font-size: 1.2rem;
     color: #fff; /* Garante que fica branco */
 }
+
+/* Container com scroll caso tenha muitos amigos */
+.lista-contatos-scroll {
+    max-height: 300px;
+    overflow-y: auto;
+    margin-top: 15px;
+    padding-right: 5px;
+}
+
+/* Scrollbar personalizada */
+.lista-contatos-scroll::-webkit-scrollbar { width: 5px; }
+.lista-contatos-scroll::-webkit-scrollbar-thumb { background: #1f8b1f; border-radius: 3px; }
+
+/* Item da Lista */
+.contato-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    transition: background 0.2s;
+}
+
+.contato-item:last-child { border-bottom: none; }
+.contato-item:hover { background: rgba(255,255,255,0.05); border-radius: 8px; }
+
+/* Avatar (Bolinha com letra) */
+.contato-avatar {
+    width: 40px;
+    height: 40px;
+    background-color: #fff;
+    color: #1f8b1f;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+/* Textos */
+.contato-info p { margin: 0; text-align: left; }
+.contato-nome { font-weight: bold; font-size: 1rem; color: white; }
+.contato-email { font-size: 0.8rem; color: #ccc; }

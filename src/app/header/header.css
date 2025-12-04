@@ -1,24 +1,63 @@
 .header {
-    grid-area: header;
-    background-color: green;
-    padding: 24px;
-    display: flex;
-    justify-content: space-between;
+    background-color: #228B22;
+    padding: 0 40px;
+    height: 80px;
+    
+    /* MUDANÇA: Usamos Grid para dividir em 3 partes */
+    display: grid;
+    /* 1fr (fração livre) | auto (tamanho do menu) | 1fr (fração livre) */
+    grid-template-columns: 1fr auto 1fr; 
     align-items: center;
+    
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+
+/* Regra mágica: Alinha o primeiro filho (H1) na ponta esquerda */
+.header > :first-child {
+    justify-self: start;
+}
+
+/* Regra mágica: Alinha o último filho (Sair) na ponta direita */
+.header > :last-child {
+    justify-self: end;
+}
+
+/* O filho do meio (Menu) já fica centralizado automaticamente pelo Grid */
+
+/* --- O RESTO DO CSS CONTINUA IGUAL --- */
+
+.header.login-mode {
+    display: flex; /* No login voltamos ao flex para centralizar só o logo */
+    justify-content: center;
+}
+
+h1 {
+    color: white;
+    margin: 0;
+    font-size: 2rem;
+    font-family: sans-serif;
+    white-space: nowrap; /* Garante que o logo não quebra linha */
 }
 
 .header-nav-menu, .header-nav-config {
     display: flex;
-    justify-content: space-evenly;
-    width: max-content;
-    margin: auto;
-    gap: 16px;
+    gap: 20px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
 }
 
-a { 
-    padding: 8px; 
+a {
+    color: white;
+    text-decoration: none;
+    font-size: 1rem;
+    padding: 8px 12px;
+    border-radius: 5px;
+    transition: background 0.3s;
+    cursor: pointer;
 }
 
-a:hover { 
-    text-decoration: underline; 
+a:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    text-decoration: none;
 }

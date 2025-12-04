@@ -46,6 +46,15 @@
     font-size: 1rem; 
     border-radius: 5px; 
     border: none; 
+    
+    /* ADICIONE ISTO AQUI: Faz a animação ser suave */
+    transition: 0.3s; 
+}
+
+/* O EFEITO HOVER (Igual ao Login) */
+.main-container-actions-transacoes button:hover {
+    opacity: 0.9;          /* Fica levemente transparente */
+    transform: scale(1.05); /* Cresce 5% */
 }
 
 /* MODAIS */
@@ -337,3 +346,27 @@ input[type="number"] {
 /* Cor especial para Erro */
 .erro-box h3 { color: #d9534f; }
 .erro-box .btn-confirmar { background-color: #d9534f; }
+
+.modal-extrato {
+    max-width: 500px; /* Um pouco mais largo */
+    height: 80vh; /* Ocupa 80% da altura da tela */
+    display: flex;
+    flex-direction: column;
+}
+
+/* A lista dentro do modal deve esticar e ter scroll */
+.lista-expandida {
+    flex: 1; /* Ocupa todo o espaço sobrando */
+    max-height: none; /* Remove o limite antigo */
+    overflow-y: auto; /* Scroll apenas na lista */
+    margin-bottom: 20px;
+    padding-right: 10px;
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+}
+
+/* Ajuste na data para aparecer completa (dd/mm/yyyy hh:mm) */
+.lista-expandida .transacao-data {
+    font-size: 0.85rem;
+    color: #666;
+}

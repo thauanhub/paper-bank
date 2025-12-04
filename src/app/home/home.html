@@ -39,7 +39,7 @@
       <section class="main-container-actions">
           <article class="main-container-actions-transacoes">
               <button (click)="abrirModalTransferencia()" id="btn-enviar">Enviar</button>
-              <button (click)="abrirModalEmprestimo()" id="btn-solicitar">Solicitar</button>
+              <button (click)="abrirExtrato()" id="btn-extrato">Ver Extrato</button>
           </article>
       </section>
   </main>
@@ -119,6 +119,37 @@
 
         <div class="modal-botoes centered">
             <button class="btn-confirmar" (click)="fecharFeedback()">Entendido</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" *ngIf="exibirModalExtrato">
+    <div class="modal-content modal-extrato"> <div class="modal-header">
+            <h3>📜 Extrato Completo</h3>
+            <p>Histórico de todas as suas movimentações.</p>
+        </div>
+
+        <ul class="lista-transacoes lista-expandida">
+            <li *ngFor="let item of historico" class="item-transacao">
+                <div class="transacao-info">
+                    <span class="transacao-tipo">{{ item.tipo }}</span>
+                    <span class="transacao-data">{{ item.data | date:'dd/MM/yyyy HH:mm' }}</span>
+                </div>
+                <div class="transacao-valor" 
+                    [class.valor-entrada]="item.entrada" 
+                    [class.valor-saida]="!item.entrada">
+                    {{ item.entrada ? '+' : '-' }} 
+                    {{ item.valor | currency:'BRL' }}
+                </div>
+            </li>
+            
+            <li *ngIf="historico.length === 0" class="sem-transacoes">
+                Nenhuma movimentação encontrada.
+            </li>
+        </ul>
+
+        <div class="modal-botoes centered">
+            <button class="btn-confirmar" (click)="fecharExtrato()">Fechar</button>
         </div>
     </div>
 </div>

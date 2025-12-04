@@ -27,6 +27,8 @@ export class HomeComponent implements OnInit {
     // 1. Pede o saldo
     this.pb.carregarSaldo();
 
+    this.carregarHistorico();
+
     // 2. Truque: Espera meio segundo e força a tela a pintar de novo
     setTimeout(() => {
       this.cdr.detectChanges();
@@ -50,6 +52,26 @@ export class HomeComponent implements OnInit {
   feedbackAberto = false;
   feedbackMensagem = '';
   feedbackTipo: 'sucesso' | 'erro' = 'sucesso';
+  exibirModalExtrato = false;
+
+  carregarHistorico() {
+    this.pb.obterExtrato().subscribe({
+      next: (lista) => {
+        console.log("Extrato recebido:", lista);
+        
+        // Mapeia para o formato visual
+        this.historico = lista.map(item => ({
+          tipo: item.tipo,
+          valor: item.valor,
+          data: new Date(item.data), // Converte texto para Data
+          entrada: item.entrada
+        }));
+        
+        this.cdr.detectChanges(); // Atualiza a tela
+      },
+      error: (err) => console.error("Erro ao carregar extrato", err)
+    });
+  }
 
   // Controles de abrir/fechar
   abrirModalTransferencia() { this.exibirModalTransferencia = true; this.valorTransferencia = null; }
@@ -101,6 +123,8 @@ confirmarTransferencia() {
              this.pb.carregarSaldo();
           }
 
+          this.carregarHistorico();
+
           // Feedback Positivo
           this.mostrarFeedback("PIX enviado com sucesso!", 'sucesso');
           
@@ -148,5 +172,20 @@ confirmarTransferencia() {
     
     alert(`Empréstimo recebido!`);
     this.fecharModalEmprestimo();
+  }
+
+  atualizarExtrato() {
+    // Apenas recarrega a lista e mostra feedback
+    this.carregarHistorico();
+    this.mostrarFeedback("Extrato atualizado com sucesso!", 'sucesso');
+  }
+
+  abrirExtrato() {
+    this.carregarHistorico(); // Garante que está atualizado
+    this.exibirModalExtrato = true;
+  }
+
+  fecharExtrato() {
+    this.exibirModalExtrato = false;
   }
 }

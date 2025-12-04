@@ -164,3 +164,33 @@
 .erro-box .btn-confirm:hover {
     background-color: #c9302c;
 }
+
+/* Estilo para Botão de Perigo (Vermelho) */
+/* Botão Vermelho para Exclusão */
+.btn-danger {
+    background-color: #d9534f; /* Vermelho */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-top: 10px; /* Espaçamento igual aos outros */
+}
+
+.btn-danger:hover {
+    background-color: #c9302c; /* Vermelho mais escuro ao passar o mouse */
+}
+
+/* Opcional: Se quiseres que o card de excluir tenha uma cor diferente */
+.card-danger {
+    background-color: #5a2a2a; /* Um tom avermelhado escuro para diferenciar */
+    /* ou mantém o verde se preferires padrão */
+}
+
+/* Ajuste no título do modal de exclusão para chamar atenção */
+.modal-content h3 {
+    margin-top: 0;
+    /* color: #228B22;  <-- Remove ou sobrescreve se quiser vermelho */
+    margin-bottom: 20px;
+}

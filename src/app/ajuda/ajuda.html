@@ -34,6 +34,13 @@
             </ul>
         </div>
 
+        <div class="card">
+            <p>Encerrar Relacionamento</p>
+            <p>Exclua sua conta e todos os dados associados permanentemente.</p>
+            
+            <button class="btn btn-danger" (click)="abrirModalExcluir()">Excluir conta</button>
+        </div>
+
     </section>
 
 </div>
@@ -80,6 +87,25 @@
 
         <div class="modal-actions centered">
             <button class="btn btn-confirm" (click)="fecharFeedback()">Entendido</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" *ngIf="modalExcluirAberto">
+    <div class="modal-content">
+        <h3 style="color: #d9534f;">⚠️ Excluir Conta</h3>
+        
+        <p style="color: #666; margin-bottom: 20px;">
+            Tem certeza? Essa ação apagará seu histórico, chaves PIX e saldo. 
+            <strong>Não pode ser desfeito.</strong>
+        </p>
+        
+        <label>Confirme sua senha atual:</label>
+        <input type="password" [(ngModel)]="senhaExclusao" placeholder="Sua senha para confirmar">
+
+        <div class="modal-actions">
+            <button class="btn btn-cancel" (click)="fecharModalExcluir()">Cancelar</button>
+            <button class="btn btn-danger" (click)="confirmarExclusaoConta()">Confirmar Exclusão</button>
         </div>
     </div>
 </div>

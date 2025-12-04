@@ -6,22 +6,23 @@ import { CommonModule } from '@angular/common';
   selector: 'app-header',
   standalone: true,
   imports: [RouterLink, CommonModule], 
-  // Aqui sim deve apontar para header.html
   templateUrl: './header.html',
   styleUrl: './header.css'
 })
 export class Header {
   
-  // Injetamos o Router para saber se é login
   constructor(public router: Router) {}
 
- ehPaginaLogin(): boolean {
-    const url = this.router.url;
+  ehPaginaLogin(): boolean {
+    return this.router.url === '/' || this.router.url.includes('/login');
+  }
+
+  // --- FUNÇÃO DE LOGOUT ---
+  logout() {
+    // 1. Limpa o token de segurança
+    localStorage.clear();
     
-    // Esconde o menu se:
-    // 1. Estiver na raiz '/' (Login)
-    // 2. Estiver no '/cadastro'
-    // 3. Estiver no '/login' (caso exista)
-    return url === '/' || url.includes('/register') || url.includes('/login');
+    // 2. Manda o usuário para a tela de login
+    this.router.navigate(['/']);
   }
 }

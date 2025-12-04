@@ -1,6 +1,7 @@
 import { Component, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { PaperBankService } from '../paper-bank.service';
 
 @Component({
@@ -14,7 +15,8 @@ export class Ajuda {
   
   constructor(
     private pb: PaperBankService,
-    private cdr: ChangeDetectorRef // Essencial para atualizar a tela rápido
+    private cdr: ChangeDetectorRef, // Essencial para atualizar a tela rápido
+    private router: Router
   ) {}
 
   // --- Variáveis do Modal de Senha ---
@@ -91,4 +93,47 @@ enviarRedefinicao() {
          this.cdr.detectChanges();
       });
   }
+
+  modalExcluirAberto = false;
+  senhaExclusao = '';
+  
+  abrirModalExcluir() {
+    this.modalExcluirAberto = true;
+    this.senhaExclusao = '';
+  }
+
+  fecharModalExcluir() {
+    this.modalExcluirAberto = false;
+  }
+
+  confirmarExclusaoConta() {
+    if (!this.senhaExclusao || this.senhaExclusao == '') {
+      this.fecharModalExcluir();
+      this.mostrarFeedback("Digite sua senha para confirmar.", 'erro');
+      return;
+    }
+
+    // Bloqueia botão (opcional, se quiseres usar a var carregando)
+    // this.carregando = true;
+
+    this.pb.excluirConta(this.senhaExclusao)
+      .subscribe({
+        next: (res: any) => {
+          this.fecharModalExcluir();
+          
+          // Feedback final antes do adeus
+          alert("Conta excluída com sucesso. Sentiremos sua falta!");
+          
+          // 3. LIMPEZA TOTAL E LOGOUT
+          localStorage.clear(); // Limpa o token
+          this.router.navigate(['/']); // Manda para o login
+        },
+        error: (err) => {
+          console.error(err);
+          const msg = err.error.detail || "Erro ao excluir conta.";
+          this.mostrarFeedback("Falha: " + msg, 'erro');
+        }
+      });
+  }
+
 }

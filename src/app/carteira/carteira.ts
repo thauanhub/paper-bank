@@ -1,6 +1,6 @@
-import { Component, inject } from '@angular/core'; // Importa inject
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { PaperBankService } from '../paper-bank.service'; // Importa o Service
+import { PaperBankService } from '../paper-bank.service'; 
 
 @Component({
   selector: 'app-carteira',
@@ -9,29 +9,75 @@ import { PaperBankService } from '../paper-bank.service'; // Importa o Service
   templateUrl: './carteira.html',
   styleUrl: './carteira.css'
 })
-export class Carteira {
-  // 1. Conecta ao cofre
-  private paperBankService = inject(PaperBankService);
+export class Carteira implements OnInit {
+  
+  constructor(
+    public pb: PaperBankService, 
+    private cdr: ChangeDetectorRef 
+  ) {}
 
-  // 2. Removemos a variável 'saldo = 1500' antiga.
-  // 3. Criamos o Getter para ler do cofre
-  get saldo(): number {
-    return this.paperBankService.saldo;
+  // Listas de dados
+  meiosDePagamento: any[] = [];
+  meusContatos: any[] = []; // Lista de contatos
+
+  ngOnInit() {
+    // 1. Carrega o Saldo
+    this.pb.carregarSaldo();
+
+    // 2. Carrega os Cartões
+    this.carregarMeusCartoes();
+    
+    // 3. Carrega os Contatos (ESTA LINHA É CRUCIAL!)
+    this.carregarContatos();
+
+    // Força atualização visual
+    setTimeout(() => { this.cdr.detectChanges(); }, 500);
   }
 
-  meiosDePagamento: any[] = [];
+  // --- Funções de Busca ---
 
-  solicitarNovoCartao() {
-    // ... lógica igual ...
-    if (this.meiosDePagamento.length >= 1) {
-      alert("Máximo 1 cartão!");
-      return;
-    }
-    this.meiosDePagamento.push({
-      tipo: 'Crédito',
-      numero: '**** 8899',
-      validade: '12/29'
+  carregarMeusCartoes() {
+    this.pb.listarCartoes().subscribe({
+      next: (listaCartoes) => {
+        console.log("Cartões recebidos:", listaCartoes);
+        this.meiosDePagamento = listaCartoes;
+        this.cdr.detectChanges();
+      },
+      error: (err) => console.error("Erro ao listar cartões", err)
     });
-    alert("Cartão criado!");
+  }
+
+  carregarContatos() {
+    // Chama o serviço para buscar quem recebeu PIX seu
+    this.pb.listarContatos().subscribe({
+      next: (lista) => {
+        // AQUI ESTÁ O LOG QUE FALTAVA NO TEU PRINT
+        console.log("Contatos encontrados:", lista);
+        this.meusContatos = lista;
+        this.cdr.detectChanges();
+      },
+      error: (err) => console.error("Erro ao buscar contatos", err)
+    });
+  }
+
+  // --- Lógica do Botão Novo Cartão ---
+  solicitarNovoCartao() {
+    // (Opcional) Limita visualmente a 1 cartão
+    if (this.meiosDePagamento.length >= 1) {
+        alert("Máximo 1 cartão por enquanto!");
+        return;
+    }
+
+    this.pb.criarCartao().subscribe({
+      next: (res) => {
+        alert("Cartão criado com sucesso!");
+        this.carregarMeusCartoes(); // Atualiza a lista
+      },
+      error: (err) => {
+        console.error(err);
+        const msg = err.error?.detail || "Erro ao criar cartão";
+        alert("Falha: " + msg);
+      }
+    });
   }
 }
