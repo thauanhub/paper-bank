@@ -21,13 +21,22 @@
     gap: 40px;
 }
 
+
 .card {
     background-color: #1f8b1f;
     padding: 24px;
     color: white;
-    width: 380px;
+    width: fit-content;
     border-radius: 16px;
     box-shadow: 0 0 10px rgba(0,0,0,0.4);
+}
+
+.card p:first-child { 
+    font-size: 1.8em; 
+    opacity: 0.8; 
+    border-bottom: 2px solid #eee; 
+    padding-bottom: 10px; 
+    margin-bottom: 16px;
 }
 
 .card.wide {
