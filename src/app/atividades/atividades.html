@@ -7,21 +7,51 @@
 
     <section class="cards-container">
 
-        <!-- Parcelamentos -->
-        <div class="card">
-            <p>Parcelamentos Ativos</p>
-            <p class="info">Nenhum parcelamento ativo no momento.</p>
-        </div>
-
-        <!-- Dados pessoais -->
-        <div class="card">
+        <!-- Dados pessoais (card menor, lado esquerdo) -->
+        <div class="card small-card">
             <p>Dados Pessoais & Bancários</p>
             <ul class="list">
-                <li>Nome: Gabriel Souza</li>
-                <li>Banco: PaperBank Digital</li>
-                <li>Agência: 0001</li>
-                <li>Conta: 123456-7</li>
+                <li><strong>Cliente:</strong> Gabriel Souza</li>
+                <li><strong>Banco:</strong> PaperBank Digital</li>
+                <li><strong>Agência:</strong> 0001</li>
+                <li><strong>Conta:</strong> 123456-7</li>
             </ul>
+        </div>
+
+        <!-- Histórico PIX (card maior, lado direito) -->
+        <div class="card wide history-card">
+            <p>Histórico de Movimentações PIX</p>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Descrição</th>
+                        <th>Valor</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <tr>
+                        <td>04/12/2025 - 14:22</td>
+                        <td>PIX enviado para João</td>
+                        <td class="value negative">- R$ 120,00</td>
+                    </tr>
+
+                    <tr>
+                        <td>03/12/2025 - 09:10</td>
+                        <td>PIX recebido de Maria</td>
+                        <td class="value positive">+ R$ 350,00</td>
+                    </tr>
+
+                    <tr>
+                        <td>02/12/2025 - 18:55</td>
+                        <td>PIX enviado para Supermercado</td>
+                        <td class="value negative">- R$ 89,50</td>
+                    </tr>
+
+                </tbody>
+            </table>
         </div>
 
     </section>

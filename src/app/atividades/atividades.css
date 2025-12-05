@@ -15,20 +15,33 @@
     margin-bottom: 40px;
 }
 
+/* Coloca os cards lado a lado */
 .cards-container {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     gap: 40px;
+    align-items: flex-start;
 }
 
-
+/* Estilo base dos cards */
 .card {
     background-color: #1f8b1f;
     padding: 24px;
     color: white;
-    width: fit-content;
     border-radius: 16px;
     box-shadow: 0 0 10px rgba(0,0,0,0.4);
+}
+
+/* Card menor – lado esquerdo */
+.small-card {
+    width: 300px;
+}
+
+/* Histórico maior – lado direito */
+.history-card {
+    flex: 1;
+    background-color: #1f8b1f; /* mais claro */
+    min-height: 320px;
 }
 
 .card p:first-child { 
@@ -37,16 +50,6 @@
     border-bottom: 2px solid #eee; 
     padding-bottom: 10px; 
     margin-bottom: 16px;
-}
-
-.card.wide {
-    width: 100%;
-}
-
-hr {
-    border: none;
-    border-top: 1px solid white;
-    margin: 10px 0 20px;
 }
 
 .table {
@@ -80,27 +83,15 @@ hr {
     padding: 0;
 }
 
-.range {
-    width: 100%;
-    margin: 10px 0 20px;
-}
-
-.btn {
-    background-color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: bold;
-}
-
-.btn:hover {
-    background-color: #ddd;
-}
-
 /* Responsivo */
 @media (max-width: 768px) {
-    .card {
+    .cards-container {
+        flex-wrap: wrap;
+    }
+    .small-card {
+        width: 100%;
+    }
+    .history-card {
         width: 100%;
     }
 }
