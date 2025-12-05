@@ -15,6 +15,8 @@ export class PaperBankService {
   // --- A VARIÁVEL QUE FALTAVA ---
   carregandoSaldo = false; 
 
+  numeroConta = '';
+
   constructor() {}
 
   carregarSaldo() {
@@ -30,6 +32,8 @@ export class PaperBankService {
       .subscribe({
         next: (resposta) => {
           this.saldo = resposta.saldo;
+
+          this.numeroConta = resposta.numero_conta;
           
           if (resposta.nome_cliente) {
             this.nomeUsuario = resposta.nome_cliente.split(' ')[0];

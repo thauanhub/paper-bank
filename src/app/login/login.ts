@@ -52,8 +52,6 @@ export class Login {
         localStorage.setItem('access_token', data.access_token);
 
         this.pb.carregarSaldo();
-        // iniciar websocket e carregar saldo
-        alert('Login realizado com sucesso!');
         // navegar para home (usamos navigateByUrl e logamos o resultado)
         this.router.navigateByUrl('/home')
           .then(ok => console.info('Navegação para /home:', ok))

@@ -41,10 +41,11 @@
 .history-card {
     flex: 1;
     background-color: #1f8b1f; /* mais claro */
-    min-height: 320px;
+    max-height: 320px;
+    overflow-y: auto;
 }
 
-.card p:first-child { 
+.history-card p:first-child, .small-card p:first-child { 
     font-size: 1.8em; 
     opacity: 0.8; 
     border-bottom: 2px solid #eee; 
@@ -81,6 +82,7 @@
 .list {
     list-style: none;
     padding: 0;
+    overflow-y: auto;
 }
 
 /* Responsivo */
@@ -94,4 +96,59 @@
     .history-card {
         width: 100%;
     }
+}
+
+/* ... seu css anterior ... */
+
+.positive {
+    color: #50C878; /* Verde */
+}
+
+.negative {
+    color: #ffcccb; /* Vermelho claro */
+}
+
+/* Opcional: Ajuste para tabela ocupar 100% */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table th, .table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+/* 1. O Card Pai trava a altura */
+.history-card {
+    height: 500px; /* Define uma altura fixa para o card */
+    display: flex;
+    flex-direction: column; /* Organiza: Título em cima, Tabela em baixo */
+    overflow: hidden; /* Impede que o card cresça infinitamente */
+}
+
+/* 2. A Área de Scroll (Só a tabela) */
+.table-scroll {
+    overflow-y: auto; /* Scroll vertical automático */
+    flex: 1; /* Ocupa todo o espaço que sobrar abaixo do título */
+    padding-right: 5px; /* Espacinho para a barra não colar no texto */
+}
+
+/* Personalizar a Barra de Rolagem (Opcional, mas fica bonito) */
+.table-scroll::-webkit-scrollbar { width: 6px; }
+.table-scroll::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
+.table-scroll::-webkit-scrollbar-thumb { background: #50C878; border-radius: 3px; }
+
+/* 3. DICA DE OURO: Prender o Cabeçalho da Tabela (TH) */
+/* Isso faz com que a linha verde (Data, Tipo, Valor) também fique fixa 
+   enquanto você rola os itens lá dentro */
+.table thead th {
+    position: sticky;
+    top: 0;
+    background-color: #228B22; /* Mesma cor do fundo original */
+    color: white;
+    z-index: 1; /* Fica por cima do conteúdo */
+    /* box-shadow opcional para separar o header do conteúdo */
+    box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4); 
 }
