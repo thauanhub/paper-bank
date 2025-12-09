@@ -237,13 +237,10 @@ Os resultados a seguir detalham a análise dos ajustes, focando em métricas cr�
 
 ---
 
-### Gráficos comparativos  
+### Gráfico comparativo: Latência
 
-**Gráfico Teste 1:**  
-<img width="990" height="564" alt="Captura de tela 2025-11-24 184551" src="https://github.com/user-attachments/assets/76d8a584-7784-4813-8df1-e183cc9c893f" />
+<img width="1233" height="660" alt="Captura de tela 2025-12-05 182829" src="https://github.com/user-attachments/assets/8d25622b-9501-4d68-bc63-32d03aa61230" />
 
-**Gráfico Teste 2:**  
-<img width="1183" height="606" alt="Captura de tela 2025-11-30 130721" src="https://github.com/user-attachments/assets/1e939657-dd71-4de7-8218-46e8aaaf7007" />
 
 **Análises:**
 - Redução clara dos picos de latência no Teste 2.  
@@ -291,13 +288,10 @@ Os resultados a seguir detalham a análise dos ajustes, focando em métricas cr�
 
 ---
 
-### Gráficos comparativos  
+### Gráfico comparativo: Latência
 
-**Gráfico Teste 1:**  
-<img width="986" height="624" alt="Captura de tela 2025-11-24 190814" src="https://github.com/user-attachments/assets/afbcb693-50ff-428c-8c3b-da8bf2a82f11" />
+<img width="923" height="474" alt="Captura de tela 2025-12-09 161544" src="https://github.com/user-attachments/assets/86b0d0e2-440d-4e05-a259-32351bdf098f" />
 
-**Gráfico Teste 2:**  
-<img width="1232" height="683" alt="Captura de tela 2025-11-30 130738" src="https://github.com/user-attachments/assets/663bedbb-d464-4c50-9f44-ed11b8252fd4" />
 
 **Análises:**
 - Teste 2 com maior estabilidade e menor oscilação.  
@@ -315,6 +309,21 @@ Os resultados a seguir detalham a análise dos ajustes, focando em métricas cr�
 
 **Arquivo modificado**
 - https://github.com/thauanhub/paper-bank/blob/main/backend/auth.py
+
+
+---
+
+### Outros gráficos comparativos:
+
+### Gráfico comparativo: Throughput
+
+<img width="926" height="486" alt="Captura de tela 2025-12-09 161602" src="https://github.com/user-attachments/assets/5179295f-c1ee-437f-8546-0ed897c6fc1d" />
+
+
+### Gráfico comparativo: Concorrência
+
+<img width="925" height="505" alt="Captura de tela 2025-12-09 161614" src="https://github.com/user-attachments/assets/c8ed8279-7767-4556-9bb0-7ac72657806f" />
+
 
 ---
 
