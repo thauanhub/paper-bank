@@ -347,21 +347,6 @@ Os resultados a seguir detalham a análise dos ajustes, focando em métricas cr�
 
 ---
 
-### Gráficos comparativos  
-
-**Gráfico Teste 1:**  
-<img width="985" height="719" alt="Captura de tela 2025-11-24 194147" src="https://github.com/user-attachments/assets/0f1f2cc1-539c-427e-af5c-c09a8ca3c0d3" />
-
-**Gráfico Teste 2:**  
-<img width="1185" height="576" alt="Captura de tela 2025-11-30 130638" src="https://github.com/user-attachments/assets/3f18ce3a-4cd8-4c44-a4f7-db3edc2dab8f" />
-
-**Análises:**
-- No Teste 2, todos os 10 VUs permaneceram ativos e operando.  
-- Indica menor bloqueio interno e execução mais suave.  
-- A operação de exclusão manteve estabilidade e previsibilidade.
-
----
-
 # 7.4. Análise completa dos novos resultados do teste de carga
 
 ## 7.4.1. Gráfico de Latência × Tempo
