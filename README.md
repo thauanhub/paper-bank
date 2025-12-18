@@ -32,7 +32,7 @@ git clone [https://github.com/thauahub/paper-bank.git](https://github.com/SEU-US
 
 ```bash
 cd paper-bank
-cd frontend
+cd src
 ```
 
 ### 3. Instalar as dependências
